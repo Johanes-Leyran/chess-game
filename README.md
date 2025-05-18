@@ -9,3 +9,6 @@ Members:
     <li>Johanes Leyran</li>
     <li>Lawrence Mojica</li>
 </ol>
+
+Sounds are from https://www.chess.com
+Sprites are from https://dani-maccari.itch.io/pixel-chess
