@@ -13,4 +13,6 @@ Members:
 <hr>
 
 
-Sounds are from https://www.chess.com Sprites are from https://dani-maccari.itch.io/pixel-chess
+Sounds are from https://www.chess.com.
+
+Sprites are from https://dani-maccari.itch.io/pixel-chess.
