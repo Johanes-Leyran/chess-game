@@ -6,13 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 
 public class ChessPanel extends JPanel {
-    Cursor normalCursor;
-    Cursor toGrabCursor;
-    Cursor grabCursor;
     BufferedImage chessBoardImg;
     CursorHandler cursorHandler;
     ComponentData componentData;
@@ -31,7 +27,6 @@ public class ChessPanel extends JPanel {
         // board sprite has an empty space around it
         this.FPS = 60; // set the fps
         this.initialPoint = new Point(0, 0);
-
         this.chessManager = new ChessManager(
                 this,
                 this.componentData.chessBoardOffset,
@@ -39,14 +34,13 @@ public class ChessPanel extends JPanel {
                 this.componentData.chessBoardSize
         );
         this.chessManager.setUpPieces();
-
         this.chessBoardImg = new SpriteSheetHandler(
                 "board.png",
                 this.componentData.chessBoardSize,
                 this.componentData.chessBoardSize,
                 this.componentData.chessBoardScale
         ).getSprite(0, 0);
-
+        this.cursorHandler = cursorHandler;
         this.setPreferredSize( new Dimension(
                 chessBoardImg.getWidth(),
                 chessBoardImg.getHeight()
@@ -55,6 +49,7 @@ public class ChessPanel extends JPanel {
         udpateLoopTimer = new Timer(1000 / this.FPS, actionEvent -> repaint());
         udpateLoopTimer.start();
 
+        // make this a separate class for better readability and looks more clean
          this.addMouseListener(new MouseAdapter() {
              @Override
              public void mousePressed(MouseEvent e) {
