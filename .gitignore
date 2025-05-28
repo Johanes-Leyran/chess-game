@@ -11,7 +11,7 @@
 .mtj.tmp/
 
 # intellij build folder
-out/
+/out/
 
 # Package Files #
 *.jar
