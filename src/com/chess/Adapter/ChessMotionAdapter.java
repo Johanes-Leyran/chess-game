@@ -15,7 +15,9 @@ public class ChessMotionAdapter extends MouseMotionAdapter {
     boolean hovering;
 
 
-    public ChessMotionAdapter(ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter) {
+    public ChessMotionAdapter(
+            ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter
+    ) {
         this.chessManager = chessManager;
         this.cursorHandler = cursorHandler;
         this.stateAdapter = stateAdapter;
@@ -25,7 +27,7 @@ public class ChessMotionAdapter extends MouseMotionAdapter {
     public void mouseMoved(MouseEvent e) {
         Piece piece = chessManager.checkBounds(e.getPoint());
 
-        if (piece != null && !hovering) {
+        if (piece != null && !hovering && !piece.getColor().equals("EMPTY")) {
             cursorHandler.setCursor("toGrab");
             hovering = true;
         }

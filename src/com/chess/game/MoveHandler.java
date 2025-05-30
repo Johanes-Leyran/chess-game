@@ -7,4 +7,7 @@ public class MoveHandler {
     public static int[][] showAvailableMoves(int type, int col, int row) {
         return null;
     }
+
+
+
 }

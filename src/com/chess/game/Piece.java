@@ -15,7 +15,16 @@ public class Piece {
      BufferedImage sprite;
 
 
-     public Piece(int color, int type, BufferedImage sprite, int col, int row, Rectangle rect, int x, int y) {
+     public Piece(
+             int color,
+             int type,
+             BufferedImage sprite,
+             int col,
+             int row,
+             Rectangle rect,
+             int x,
+             int y
+     ) {
           this.color = color;
           this.type = type;
           this.sprite = sprite;
@@ -26,17 +35,27 @@ public class Piece {
           this.y = y;
      }
 
-     // position of the piece on the chess board 2d array
      public void setSnappedPosition(int col, int row) {
           this.col = col;
           this.row = row;
      }
 
+     public Point getMiddlePoint() {
+          Point point = this.rect.getLocation();
+          point.setLocation(
+                  point.getX() + (double) this.sprite.getWidth() / 2,
+                  point.getY() + (double) this.sprite.getHeight() / 2
+          );
+          return point;
+     }
+
      public String getColor() {
           if(this.color == 0) {
                return "WHITE";
+          } else if (this.color == 1) {
+               return "BLACK";
           }
-          return "BLACK";
+          return "EMPTY";
      }
 
      public void setPosition(int x, int y) {

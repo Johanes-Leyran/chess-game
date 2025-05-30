@@ -14,7 +14,9 @@ public class ChessMouseAdapter extends MouseAdapter {
     StateAdapter stateAdapter;
 
 
-    public ChessMouseAdapter(ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter) {
+    public ChessMouseAdapter(
+            ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter
+    ) {
         this.chessManager = chessManager;
         this.cursorHandler = cursorHandler;
         this.stateAdapter = stateAdapter;
@@ -27,34 +29,39 @@ public class ChessMouseAdapter extends MouseAdapter {
         Point point = e.getPoint();
         Piece piece = chessManager.checkBounds(point);
 
-        if(piece != null) {
-            this.stateAdapter.getInitialPoint().setLocation(
-                    (int) point.getX() - piece.getXPosition(),
-                    (int) point.getY() - piece.getYPosition()
-            );
-
-            cursorHandler.setCursor("grab");
-            piece.setIsDragged(true);
-            this.stateAdapter.toggleDragging();
-            this.stateAdapter.setSelected(piece);
+        if(piece == null) {
+            return;
         }
+
+        this.stateAdapter.getInitialPoint().setLocation(
+                (int) point.getX() - piece.getXPosition(),
+                (int) point.getY() - piece.getYPosition()
+        );
+
+        cursorHandler.setCursor("grab");
+        piece.setIsDragged(true);
+        this.stateAdapter.toggleDragging();
+        this.stateAdapter.setSelected(piece);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         cursorHandler.setCursor("normal");
 
-        if(stateAdapter.getDragging()) {
-            Piece selected = stateAdapter.getSelected();
-
-            selected.setIsDragged(false);
-            stateAdapter.toggleDragging();
-
-            int lastSnapXPosition = chessManager.getSnappedXPos(selected.getCol());
-            int lastSnapYPosition = chessManager.getSnappedYPos(selected.getRow());
-
-            selected.setPosition(lastSnapXPosition, lastSnapYPosition);
-            stateAdapter.setSelected(null);
+        if(!stateAdapter.getDragging()) {
+            return;
         }
+
+        Piece selected = stateAdapter.getSelected();
+
+        selected.setIsDragged(false);
+        stateAdapter.toggleDragging();
+
+        int lastSnapXPosition = chessManager.getSnappedXPos(selected.getCol());
+        int lastSnapYPosition = chessManager.getSnappedYPos(selected.getRow());
+
+        // TODO: find closet tile rect then use move handler to handle move logics
+        selected.setPosition(lastSnapXPosition, lastSnapYPosition);
+        stateAdapter.setSelected(null);
     }
 }

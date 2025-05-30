@@ -13,15 +13,16 @@ public class ChessManager {
     static int[] startingLine = {
             PiecesType.ROOK, PiecesType.KNIGHT, PiecesType.BISHOP, PiecesType.QUEEN, PiecesType.KING
     };
+    static int[] pawnLine = {
+            PiecesType.PAWN, PiecesType.PAWN, PiecesType.PAWN, PiecesType.PAWN,  PiecesType.PAWN
+    };
 
     JPanel chessPanel;
     int chessBoardOffset;
     double chessBoardScale;
     int chessBoardSize;
-    // gives move
-    // update the game
-    // handles pieces
-    // handles logic of the game
+
+
     public ChessManager(
             JPanel chessPanel,
             int chessBoardOffset,
@@ -54,7 +55,7 @@ public class ChessManager {
         return new Rectangle(x, y, sprite.getWidth(), sprite.getHeight());
     }
 
-    public void setUpLine(SpriteSheetHandler spriteSheet, int color, int row
+    public void setUpLine(SpriteSheetHandler spriteSheet, int color, int row, int[] line, boolean empty
     ) {
         for(int col = 0;col < 8;col++) {
             int indexStartingLine;
@@ -62,7 +63,7 @@ public class ChessManager {
             if(col > 4) indexStartingLine = 7 - col;
             else indexStartingLine = col;
 
-            BufferedImage sprite = spriteSheet.getSprite(0, startingLine[indexStartingLine]);
+            BufferedImage sprite = spriteSheet.getSprite(0, line[indexStartingLine]);
             int positionX = getSnappedXPos(col);
             int positionY = getSnappedYPos(row);
 
@@ -74,31 +75,7 @@ public class ChessManager {
 
             chessBoard[row][col] = new Piece(
                     color,
-                    startingLine[indexStartingLine],
-                    sprite,
-                    col,
-                    row,
-                    rect,
-                    positionX,
-                    positionY
-            );
-        }
-    }
-
-    public void setUpPawnLine(SpriteSheetHandler spriteSheet, int color, int row) {
-        for(int col = 0;col < chessBoard[row].length;col++) {
-            BufferedImage sprite = spriteSheet.getSprite(0, PiecesType.PAWN);
-            int positionX = getSnappedXPos(col);
-            int positionY = getSnappedYPos(row);
-
-            Rectangle rect = setUpRect(
-                    positionX,
-                    positionY,
-                    sprite
-            );
-            chessBoard[row][col] = new Piece(
-                    color,
-                    PiecesType.PAWN,
+                    empty ? PiecesType.EMPTY : line[indexStartingLine],
                     sprite,
                     col,
                     row,
@@ -117,16 +94,18 @@ public class ChessManager {
                 "black_pieces.png", 16, 32, 3
         );
 
-        // set up black pieces
-        setUpLine(blackPieces, PiecesColors.BLACK, 0);
-        setUpPawnLine(blackPieces, PiecesColors.BLACK, 1);
+        setUpLine(blackPieces, PiecesColors.BLACK, 0, startingLine, false);
+        setUpLine(blackPieces, PiecesColors.BLACK, 1, pawnLine, false);
 
-        // set up white pieces
-        setUpLine(whitePieces, PiecesColors.WHITE, 7);
-        setUpPawnLine(whitePieces, PiecesColors.WHITE, 6);
+        for(int row = 2;row < 6;row++)
+            setUpLine(whitePieces, PiecesColors.EMPTY, row, pawnLine, true);
+
+        setUpLine(whitePieces, PiecesColors.WHITE, 6, pawnLine, false);
+        setUpLine(whitePieces, PiecesColors.WHITE, 7, startingLine, false);
+
+
     }
 
-    // load the sprites to the chess board
     public void drawPieces(Graphics g) {
         int tileSize = getTileSize();
         int leftMargin = tileSize / 4;
@@ -135,23 +114,24 @@ public class ChessManager {
             for(int col = 0;col < 8;col++) {
                 Piece piece = chessBoard[row][col];
 
-                if(piece == null)
+                if(piece == null || piece.getColor().equals("EMPTY") || piece.isDragged)
                     continue;
 
-                if(piece.isDragged) {
-                    g.drawImage(piece.sprite, piece.x, piece.y, null);
-                }
-
-                if(!piece.isDragged) {
-                    g.drawImage(
-                            piece.sprite,
-                            getSnappedPos(col) + leftMargin,
-                            getSnappedPos(row) - tileSize/7,
-                            null
-                    );
-                }
+                g.drawImage(
+                        piece.sprite,
+                        getSnappedPos(col) + leftMargin,
+                        getSnappedPos(row) - tileSize / 7,
+                        null
+                );
             }
         }
+    }
+
+    public void drawSinglePiece(Graphics g, Piece piece) {
+        if(piece == null)
+            return;
+
+        g.drawImage(piece.sprite, piece.x, piece.y, null);
     }
 
     public Piece getPiece(int row, int col) {
