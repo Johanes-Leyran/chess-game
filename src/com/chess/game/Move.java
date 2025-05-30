@@ -2,11 +2,21 @@ package src.com.chess.game;
 
 
 public class Move {
-    int col, row, color;
+    int prev_col, prev_row, new_col, new_row;
+    Piece piece, captured;
 
-    public Move(int col, int row, int color) {
-        this.col = col;
-        this.row = row;
-        this.color = color;
+    public Move(
+            int prev_col, int prev_row,
+            int new_col, int new_row,
+            Piece piece, Piece captured
+    ) {
+        this.prev_col = prev_col;
+        this.prev_row = prev_row;
+
+        this.new_col = new_col;
+        this.new_row = new_row;
+
+        this.piece = piece;
+        this.captured = captured;
     }
 }

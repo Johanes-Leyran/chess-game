@@ -1,10 +1,12 @@
 package src.com.chess.components;
 
+import src.com.chess.Adapter.ChessMotionAdapter;
+import src.com.chess.Adapter.ChessMouseAdapter;
+import src.com.chess.Adapter.StateAdapter;
 import src.com.chess.game.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 
@@ -13,20 +15,13 @@ public class ChessPanel extends JPanel {
     CursorHandler cursorHandler;
     ComponentData componentData;
     int FPS;
-    Point initialPoint;
-    boolean hovering;
-    boolean dragging;
-    BasePiece selected;
     Timer udpateLoopTimer;
     ChessManager chessManager;
 
 
     public ChessPanel(ComponentData componentData, CursorHandler cursorHandler){
         this.componentData = componentData;
-
-        // board sprite has an empty space around it
-        this.FPS = 60; // set the fps
-        this.initialPoint = new Point(0, 0);
+        this.FPS = 60;
         this.chessManager = new ChessManager(
                 this,
                 this.componentData.chessBoardOffset,
@@ -46,77 +41,13 @@ public class ChessPanel extends JPanel {
                 chessBoardImg.getHeight()
         ));
 
-        udpateLoopTimer = new Timer(1000 / this.FPS, actionEvent -> repaint());
+        udpateLoopTimer = new Timer(1000 / this.FPS, _ -> repaint());
         udpateLoopTimer.start();
 
-        // make this a separate class for better readability and looks more clean
-         this.addMouseListener(new MouseAdapter() {
-             @Override
-             public void mousePressed(MouseEvent e) {
-                 super.mouseClicked(e);
+        StateAdapter stateAdapter = new StateAdapter(new Point(0, 0));
 
-                 // check if the mouse clicked on a piece
-                 Point point = e.getPoint();
-                 BasePiece piece = chessManager.checkBounds(point);
-                                                         
-                 if(piece != null) {
-                     initialPoint.setLocation(
-                             (int) point.getX() - piece.getXPosition(),
-                             (int) point.getY() - piece.getYPosition()
-                     );
-
-                     cursorHandler.setCursor("grab");
-                     piece.setIsDragged(true);
-                     dragging = true;
-                     selected = piece;
-                 }
-             }
-
-             @Override
-             public void mouseReleased(MouseEvent e) {
-                 cursorHandler.setCursor("normal");
-
-                 if(dragging) {
-                     selected.setIsDragged(false);
-                     dragging = false;
-
-                     int lastSnapXPosition = chessManager.getSnappedXPos(selected.getCol());
-                     int lastSnapYPosition = chessManager.getSnappedYPos(selected.getRow());
-
-                     selected.setPosition(
-                             lastSnapXPosition, lastSnapYPosition
-                     );
-
-                     selected = null;
-                 }
-             }
-         });
-
-        this.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                // Check if the mouse point is inside the bounds of any piece
-                BasePiece piece = chessManager.checkBounds(e.getPoint());
-
-                if (piece != null && !hovering) {
-                    cursorHandler.setCursor("toGrab");
-                    hovering = true;
-                }
-                if(hovering && piece == null) {
-                    cursorHandler.setCursor("normal");
-                    hovering = false;
-                }
-            }
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (dragging && selected != null) {
-                    selected.setPosition(
-                            (int)(e.getX() - initialPoint.getX()),
-                            (int)(e.getY() - initialPoint.getY())
-                    );
-                }
-            }
-        });
+        this.addMouseListener(new ChessMouseAdapter(this.chessManager, this.cursorHandler, stateAdapter));
+        this.addMouseMotionListener(new ChessMotionAdapter(this.chessManager, this.cursorHandler, stateAdapter));
     }
 
     @Override

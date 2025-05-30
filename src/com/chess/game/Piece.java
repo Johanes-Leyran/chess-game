@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 
-public class BasePiece {
+public class Piece {
      int color;
      int type;
      int col, row;
@@ -15,7 +15,7 @@ public class BasePiece {
      BufferedImage sprite;
 
 
-     public BasePiece(int color, int type, BufferedImage sprite, int col, int row, Rectangle rect, int x, int y) {
+     public Piece(int color, int type, BufferedImage sprite, int col, int row, Rectangle rect, int x, int y) {
           this.color = color;
           this.type = type;
           this.sprite = sprite;

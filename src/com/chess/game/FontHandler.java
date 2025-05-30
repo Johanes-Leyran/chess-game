@@ -3,6 +3,7 @@ package src.com.chess.game;
 import java.awt.*;
 import java.io.IOException;
 
+
 public class FontHandler {
     private static Font font;
 

@@ -6,11 +6,10 @@ import src.com.chess.constants.PiecesType;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 
 public class ChessManager {
-    static BasePiece[][] chessBoard = new BasePiece[8][8];
+    static Piece[][] chessBoard = new Piece[8][8];
     static int[] startingLine = {
             PiecesType.ROOK, PiecesType.KNIGHT, PiecesType.BISHOP, PiecesType.QUEEN, PiecesType.KING
     };
@@ -73,7 +72,7 @@ public class ChessManager {
                     sprite
             );
 
-            chessBoard[row][col] = new BasePiece(
+            chessBoard[row][col] = new Piece(
                     color,
                     startingLine[indexStartingLine],
                     sprite,
@@ -97,7 +96,7 @@ public class ChessManager {
                     positionY,
                     sprite
             );
-            chessBoard[row][col] = new BasePiece(
+            chessBoard[row][col] = new Piece(
                     color,
                     PiecesType.PAWN,
                     sprite,
@@ -134,7 +133,7 @@ public class ChessManager {
 
         for(int row = 0;row < 8;row++) {
             for(int col = 0;col < 8;col++) {
-                BasePiece piece = chessBoard[row][col];
+                Piece piece = chessBoard[row][col];
 
                 if(piece == null)
                     continue;
@@ -143,7 +142,6 @@ public class ChessManager {
                     g.drawImage(piece.sprite, piece.x, piece.y, null);
                 }
 
-                // don't draw the sprite if it's being dragged
                 if(!piece.isDragged) {
                     g.drawImage(
                             piece.sprite,
@@ -156,14 +154,14 @@ public class ChessManager {
         }
     }
 
-    public BasePiece getPiece(int row, int col) {
+    public Piece getPiece(int row, int col) {
         return chessBoard[row][col];
     }
 
-    public BasePiece checkBounds(Point point) {
+    public Piece checkBounds(Point point) {
         for(int row = 0;row < 8 ;row++) {
             for(int col = 0;col < 8;col++) {
-                BasePiece piece = getPiece(row, col);
+                Piece piece = getPiece(row, col);
 
                 if(piece == null) {
                     continue;

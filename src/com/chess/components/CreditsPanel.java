@@ -20,7 +20,13 @@ public class CreditsPanel extends JPanel {
     FontHandler fontHandler;
 
 
-    public CreditsPanel(JPanel mainPanel, CardLayout cardLayout, JFrame frame, CursorHandler cursorHandler, FontHandler fontHandler) {
+    public CreditsPanel(
+            JPanel mainPanel,
+            CardLayout cardLayout,
+            JFrame frame,
+            CursorHandler cursorHandler,
+            FontHandler fontHandler
+    ) {
         this.mainPanel = mainPanel;
         this.cardLayout = cardLayout;
         this.frame = frame;
@@ -98,14 +104,14 @@ public class CreditsPanel extends JPanel {
             }
         });
 
-        backBtn.addActionListener(actionEvent -> {
+        backBtn.addActionListener(_ -> {
             this.cursorHandler.setCursor("grab");
             cardLayout.show(mainPanel, "MENU");
             SoundManager.play("capture");
 
             final int CURSOR_RESET_DELAY_MS = 150;
 
-            Timer cursorResetTimer = new Timer(CURSOR_RESET_DELAY_MS, e -> {
+            Timer cursorResetTimer = new Timer(CURSOR_RESET_DELAY_MS, _ -> {
                 this.cursorHandler.setCursor("normal");
             });
             cursorResetTimer.setRepeats(false); // Ensure it only runs once
@@ -130,7 +136,9 @@ public class CreditsPanel extends JPanel {
         JLabel[] labels = new JLabel[size];
 
         for(int i = 0; i < list.length;i++) {
-            JLabel labelName = this.createLabel(list[i], new EmptyBorder(0, 0, 15, 0), 20);
+            JLabel labelName = this.createLabel(
+                    list[i], new EmptyBorder(0, 0, 15, 0), 20
+            );
             labels[i] = labelName;
         }
 
