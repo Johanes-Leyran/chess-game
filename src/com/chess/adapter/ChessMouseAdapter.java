@@ -1,5 +1,6 @@
-package src.com.chess.Adapter;
+package src.com.chess.adapter;
 
+import src.com.chess.game.MoveHandler;
 import src.com.chess.game.Piece;
 import src.com.chess.game.ChessManager;
 import src.com.chess.game.CursorHandler;
@@ -12,14 +13,16 @@ public class ChessMouseAdapter extends MouseAdapter {
     ChessManager chessManager;
     CursorHandler cursorHandler;
     StateAdapter stateAdapter;
+    MoveHandler moveHandler;
 
 
     public ChessMouseAdapter(
-            ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter
+            ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter, MoveHandler moveHandler
     ) {
         this.chessManager = chessManager;
         this.cursorHandler = cursorHandler;
         this.stateAdapter = stateAdapter;
+        this.moveHandler = moveHandler;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class ChessMouseAdapter extends MouseAdapter {
         Point point = e.getPoint();
         Piece piece = chessManager.checkBounds(point);
 
-        if(piece == null) {
+        if(piece == null || piece.getColor().equals("EMPTY")) {
             return;
         }
 
@@ -53,15 +56,15 @@ public class ChessMouseAdapter extends MouseAdapter {
         }
 
         Piece selected = stateAdapter.getSelected();
+        Piece target = chessManager.getNearestRect(selected);
+
+        System.out.println("---------");
+        System.out.printf("Selected row: %s col: %s %n", selected.getRow(), selected.getCol());
+        System.out.printf("Target row: %s col: %s %n", target.getRow(), target.getCol());
+        moveHandler.move(selected, target);
 
         selected.setIsDragged(false);
         stateAdapter.toggleDragging();
-
-        int lastSnapXPosition = chessManager.getSnappedXPos(selected.getCol());
-        int lastSnapYPosition = chessManager.getSnappedYPos(selected.getRow());
-
-        // TODO: find closet tile rect then use move handler to handle move logics
-        selected.setPosition(lastSnapXPosition, lastSnapYPosition);
         stateAdapter.setSelected(null);
     }
 }

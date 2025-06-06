@@ -1,19 +1,19 @@
-package src.com.chess.Adapter;
+package src.com.chess.adapter;
 
 import src.com.chess.game.Piece;
 
 import java.awt.*;
 
 // not really an adapter but I don't know where to put it
-// a class that holds data to be shared across adapters
+// a class that holds data to be shared across adapters class
 public class StateAdapter {
     Point initialPoint;
     Piece selected;
     boolean dragging;
 
 
-    public StateAdapter(Point initialPoint) {
-        this.initialPoint = initialPoint;
+    public StateAdapter() {
+        this.initialPoint = new Point(0, 0);
         this.dragging = false;
     }
 

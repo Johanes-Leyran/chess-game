@@ -1,4 +1,4 @@
-package src.com.chess.Adapter;
+package src.com.chess.adapter;
 
 import src.com.chess.game.Piece;
 import src.com.chess.game.ChessManager;
@@ -27,7 +27,7 @@ public class ChessMotionAdapter extends MouseMotionAdapter {
     public void mouseMoved(MouseEvent e) {
         Piece piece = chessManager.checkBounds(e.getPoint());
 
-        if (piece != null && !hovering && !piece.getColor().equals("EMPTY")) {
+        if (piece != null && !hovering && piece.getType() != -1) {
             cursorHandler.setCursor("toGrab");
             hovering = true;
         }

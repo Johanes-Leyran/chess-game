@@ -1,8 +1,8 @@
 package src.com.chess.components;
 
-import src.com.chess.Adapter.ChessMotionAdapter;
-import src.com.chess.Adapter.ChessMouseAdapter;
-import src.com.chess.Adapter.StateAdapter;
+import src.com.chess.adapter.ChessMotionAdapter;
+import src.com.chess.adapter.ChessMouseAdapter;
+import src.com.chess.adapter.StateAdapter;
 import src.com.chess.game.*;
 
 import javax.swing.*;
@@ -44,9 +44,11 @@ public class ChessPanel extends JPanel {
 
         this.udpateLoopTimer = new Timer(1000 / this.FPS, _ -> repaint());
         this.udpateLoopTimer.start();
-        this.stateAdapter = new StateAdapter(new Point(0, 0));
+        this.stateAdapter = new StateAdapter();
 
-        this.addMouseListener(new ChessMouseAdapter(this.chessManager, this.cursorHandler, stateAdapter));
+        this.addMouseListener(new ChessMouseAdapter(
+                this.chessManager, this.cursorHandler, stateAdapter, new MoveHandler(chessManager, this))
+        );
         this.addMouseMotionListener(new ChessMotionAdapter(this.chessManager, this.cursorHandler, stateAdapter));
     }
 
@@ -57,7 +59,6 @@ public class ChessPanel extends JPanel {
                 this.chessBoardImg, 0, 0, null
         );
         chessManager.drawPieces(g);
-        // draw the dragging piece last so it will be on top of all other pieces
         chessManager.drawSinglePiece(g, stateAdapter.getSelected());
     }
 }

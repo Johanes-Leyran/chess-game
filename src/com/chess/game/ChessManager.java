@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 
 public class ChessManager {
     static Piece[][] chessBoard = new Piece[8][8];
-    static int[] startingLine = {
+    static int[] backLine = {
             PiecesType.ROOK, PiecesType.KNIGHT, PiecesType.BISHOP, PiecesType.QUEEN, PiecesType.KING
     };
     static int[] pawnLine = {
@@ -35,27 +35,41 @@ public class ChessManager {
         this.chessBoardSize = chessBoardSize;
     }
 
-    public int getTileSize() {
-        return (int)((chessBoardSize - (chessBoardOffset * 2)) * chessBoardScale) / 8;
+    public int getTileSize() { return (int)((chessBoardSize - (chessBoardOffset * 2)) * chessBoardScale) / 8; }
+
+    public int getSnappedPos(int i) { return (int)(chessBoardOffset * chessBoardScale) + (getTileSize() * i); }
+
+    public int getSnappedXPos(int col ){ return getSnappedPos(col) + getTileSize() / 3; }
+
+    public int getSnappedYPos(int row ){ return getSnappedPos(row) - getTileSize() / 7; }
+
+    public int getColumnPos(int x) {
+        int base = x - getTileSize() / 3;
+        int snappedStart = (int)(chessBoardOffset * chessBoardScale);
+        return (base - snappedStart) / getTileSize();
     }
 
-    public int getSnappedPos(int i) {
-        return (int)(chessBoardOffset * chessBoardScale) + (getTileSize() * i);
+    public int getRowPos(int y) {
+        int base = y + getTileSize() / 7;
+        int snappedStart = (int)(chessBoardOffset * chessBoardScale);
+        return (base - snappedStart) / getTileSize();
     }
 
-    public int getSnappedXPos(int col ){
-        return getSnappedPos(col) + getTileSize()/3;
-    }
-
-    public int getSnappedYPos(int row ){
-        return getSnappedPos(row) - getTileSize()/7;
+    public Rectangle getTileBounds(int col, int row) {
+        return new Rectangle(
+                getSnappedPos(col),
+                getSnappedPos(row),
+                getTileSize(),
+                getTileSize()
+        );
     }
 
     public Rectangle setUpRect(int x, int y, BufferedImage sprite) {
         return new Rectangle(x, y, sprite.getWidth(), sprite.getHeight());
     }
 
-    public void setUpLine(SpriteSheetHandler spriteSheet, int color, int row, int[] line, boolean empty
+    public void setUpLine(
+            SpriteSheetHandler spriteSheet, int color, int row, int[] line, boolean empty
     ) {
         for(int col = 0;col < 8;col++) {
             int indexStartingLine;
@@ -94,16 +108,14 @@ public class ChessManager {
                 "black_pieces.png", 16, 32, 3
         );
 
-        setUpLine(blackPieces, PiecesColors.BLACK, 0, startingLine, false);
+        setUpLine(blackPieces, PiecesColors.BLACK, 0, backLine, false);
         setUpLine(blackPieces, PiecesColors.BLACK, 1, pawnLine, false);
 
         for(int row = 2;row < 6;row++)
             setUpLine(whitePieces, PiecesColors.EMPTY, row, pawnLine, true);
 
         setUpLine(whitePieces, PiecesColors.WHITE, 6, pawnLine, false);
-        setUpLine(whitePieces, PiecesColors.WHITE, 7, startingLine, false);
-
-
+        setUpLine(whitePieces, PiecesColors.WHITE, 7, backLine, false);
     }
 
     public void drawPieces(Graphics g) {
@@ -134,8 +146,10 @@ public class ChessManager {
         g.drawImage(piece.sprite, piece.x, piece.y, null);
     }
 
-    public Piece getPiece(int row, int col) {
-        return chessBoard[row][col];
+    public Piece getPiece(int row, int col) { return chessBoard[row][col]; }
+
+    public void setPiece(int row, int col, Piece piece) {
+        chessBoard[row][col] = piece;
     }
 
     public Piece checkBounds(Point point) {
@@ -143,15 +157,30 @@ public class ChessManager {
             for(int col = 0;col < 8;col++) {
                 Piece piece = getPiece(row, col);
 
-                if(piece == null) {
-                    continue;
-                }
-
                 if(piece.getBounds().contains(point)) {
                     return piece;
                 }
             }
         }
         return null;
+    }
+
+    public Piece getNearestRect(Piece piece) {
+        Piece nearestPiece = null;
+        double nearestDistance = Double.MAX_VALUE;
+
+        for(int row = 0;row < 8 ;row++) {
+            for(int col = 0;col < 8;col++) {
+                Piece currentPiece = getPiece(row, col);
+
+                double distance = piece.getMiddlePoint().distance(currentPiece.getRectMiddlePoint());
+
+                if(distance < nearestDistance) {
+                    nearestPiece = currentPiece;
+                    nearestDistance = distance;
+                }
+            }
+        }
+        return nearestPiece;
     }
 }

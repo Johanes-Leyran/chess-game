@@ -28,23 +28,41 @@ public class Piece {
           this.color = color;
           this.type = type;
           this.sprite = sprite;
-          this.col = col;
           this.row = row;
+          this.col = col;
           this.rect = rect;
           this.x = x;
           this.y = y;
      }
 
-     public void setSnappedPosition(int col, int row) {
-          this.col = col;
+     public void setSnappedPosition(int row, int col) {
           this.row = row;
+          this.col = col;
      }
 
-     public Point getMiddlePoint() {
+     public Point getRectMiddlePoint() {
           Point point = this.rect.getLocation();
           point.setLocation(
                   point.getX() + (double) this.sprite.getWidth() / 2,
                   point.getY() + (double) this.sprite.getHeight() / 2
+          );
+          return point;
+     }
+
+     public Point getMiddlePoint() {
+          Point point = new Point();
+          point.setLocation(
+                  this.getXPosition() + (double) this.sprite.getWidth() / 2,
+                  this.getYPosition() + (double) this.sprite.getHeight() / 2
+          );
+          return point;
+     }
+
+     public Point getLocation() {
+          Point point = new Point();
+          point.setLocation(
+                  this.getXPosition(),
+                  this.getYPosition()
           );
           return point;
      }
@@ -56,6 +74,15 @@ public class Piece {
                return "BLACK";
           }
           return "EMPTY";
+     }
+
+     public int getType() {
+          return this.type;
+     }
+
+     public void setPosition(Point point) {
+          this.x = point.x;
+          this.y = point.y;
      }
 
      public void setPosition(int x, int y) {
@@ -85,5 +112,9 @@ public class Piece {
 
      public Rectangle getBounds() {
           return this.rect;
+     }
+
+     public void setBounds(Point point) {
+          this.rect.setBounds(point.x, point.y, sprite.getWidth(), sprite.getHeight());
      }
 }
