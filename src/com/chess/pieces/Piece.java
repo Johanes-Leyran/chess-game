@@ -1,4 +1,6 @@
-package src.com.chess.game;
+package src.com.chess.pieces;
+
+import src.com.chess.game.Move;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -35,6 +37,14 @@ public class Piece {
           this.y = y;
      }
 
+     public BufferedImage getSprite() {
+          return sprite;
+     }
+
+     public boolean isDragged() {
+          return this.isDragged;
+     }
+
      public void setSnappedPosition(int row, int col) {
           this.row = row;
           this.col = col;
@@ -67,13 +77,12 @@ public class Piece {
           return point;
      }
 
-     public String getColor() {
-          if(this.color == 0) {
-               return "WHITE";
-          } else if (this.color == 1) {
-               return "BLACK";
-          }
-          return "EMPTY";
+     public int getColor() {
+          return this.color;
+     }
+
+     public void setColor(int color) {
+          this.color = color;
      }
 
      public int getType() {
@@ -90,13 +99,9 @@ public class Piece {
           this.y = y;
      }
 
-     public int getXPosition() {
-          return this.x;
-     }
+     public int getXPosition() { return this.x; }
 
-     public int getYPosition() {
-          return this.y;
-     }
+     public int getYPosition() { return this.y; }
 
      public int getRow() {
           return this.row;
@@ -114,7 +119,15 @@ public class Piece {
           return this.rect;
      }
 
-     public void setBounds(Point point) {
-          this.rect.setBounds(point.x, point.y, sprite.getWidth(), sprite.getHeight());
+     public void setBounds(Rectangle rect) {
+          this.rect = rect;
+     }
+
+     public boolean showAvailableMoves() {
+          return false;
+     }
+
+     public boolean isValidMove(Move move, Piece[][] chessboard) {
+          return false;
      }
 }

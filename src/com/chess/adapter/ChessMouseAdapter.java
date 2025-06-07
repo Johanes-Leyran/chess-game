@@ -1,9 +1,11 @@
 package src.com.chess.adapter;
 
+import src.com.chess.constants.PiecesColors;
 import src.com.chess.game.MoveHandler;
-import src.com.chess.game.Piece;
+import src.com.chess.pieces.Piece;
 import src.com.chess.game.ChessManager;
 import src.com.chess.game.CursorHandler;
+import src.com.chess.utils.Log;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -32,16 +34,23 @@ public class ChessMouseAdapter extends MouseAdapter {
         Point point = e.getPoint();
         Piece piece = chessManager.checkBounds(point);
 
-        if(piece == null || piece.getColor().equals("EMPTY")) {
+        if(piece == null || piece.getColor() == PiecesColors.EMPTY) {
             return;
         }
 
+        cursorHandler.setCursor("grab");
         this.stateAdapter.getInitialPoint().setLocation(
                 (int) point.getX() - piece.getXPosition(),
                 (int) point.getY() - piece.getYPosition()
         );
 
-        cursorHandler.setCursor("grab");
+        Log.DEBUG(String.format(
+                "%s Mouse pressed positon at x: %s, y: %s",
+                this.getClass().getSimpleName(),
+                piece.getXPosition(),
+                piece.getYPosition()
+        ));
+
         piece.setIsDragged(true);
         this.stateAdapter.toggleDragging();
         this.stateAdapter.setSelected(piece);
@@ -49,6 +58,8 @@ public class ChessMouseAdapter extends MouseAdapter {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
+
         cursorHandler.setCursor("normal");
 
         if(!stateAdapter.getDragging()) {
@@ -58,12 +69,25 @@ public class ChessMouseAdapter extends MouseAdapter {
         Piece selected = stateAdapter.getSelected();
         Piece target = chessManager.getNearestRect(selected);
 
-        System.out.println("---------");
-        System.out.printf("Selected row: %s col: %s %n", selected.getRow(), selected.getCol());
-        System.out.printf("Target row: %s col: %s %n", target.getRow(), target.getCol());
-        moveHandler.move(selected, target);
+        Log.DEBUG(String.format(
+                "%s Mouse released positon at x: %s, y: %s",
+                this.getClass().getSimpleName(),
+                selected.getXPosition(),
+                selected.getYPosition()
+        ));
 
+        moveHandler.validateMove(selected, target);
         selected.setIsDragged(false);
+
+        selected.setPosition(
+                chessManager.getSnappedXPos(selected.getCol()),
+                chessManager.getSnappedYPos(selected.getRow())
+        );
+        target.setPosition(
+                chessManager.getSnappedXPos(target.getCol()),
+                chessManager.getSnappedYPos(target.getRow())
+        );
+
         stateAdapter.toggleDragging();
         stateAdapter.setSelected(null);
     }

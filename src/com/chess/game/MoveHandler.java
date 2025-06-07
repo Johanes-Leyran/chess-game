@@ -1,28 +1,21 @@
 package src.com.chess.game;
 
 
-import javax.swing.*;
-import java.awt.*;
+import src.com.chess.constants.PiecesColors;
+import src.com.chess.pieces.Piece;
+import src.com.chess.utils.SoundManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MoveHandler {
-//    int EMPTY = -1;
-//    int PAWN = 0;
-//    int KNIGHT = 1;
-//    int ROOK = 2;
-//    int BISHOP = 3;
-//    int QUEEN = 4;
-//    int KING = 5;
     static ArrayList<Move> moveHistory; // could use a linked list instead
     static HashMap<Integer, String> pieceName = new HashMap<>();
 
     ChessManager chessManager;
-    JPanel chessPanel;
 
-    public MoveHandler(ChessManager chessManager, JPanel chessPanel) {
+    public MoveHandler(ChessManager chessManager) {
         this.chessManager = chessManager;
-        this.chessPanel = chessPanel;
 
         pieceName.put(-1, "EMPTY");
         pieceName.put(0, "PAWN");
@@ -39,56 +32,46 @@ public class MoveHandler {
 
     public void revertMove(Move move) {}
 
-    // todo: black piece seem to be inconsistent compared to whites
-    // todo: trying to move black pieces more than one time does not always work
-    // todo: unable to move a piece and put it back at the last position
-    // todo: inconsistent move mechanics
+    // todo: inconsistent dragging mechanics
     // todo: hovering mouse at same piece after moving does not show the toHold mouse cursor
-    // todo: changing of the rectangle of pieces is inconsistent
-    // todo: fix inconsistent col and row
 
-    public void move(Piece selected, Piece target) {
-        if(selected.equals(target)) {
-            return;
-        }
+    public void swap(Move move) {
+        chessManager.updatePiece(move.new_row, move.new_col, move.piece);
+        chessManager.updatePiece(move.prev_row, move.prev_col, move.captured);
+    }
 
-        System.out.printf("Selected: %s %n", pieceName.get(selected.getType()));
-        System.out.printf("Target: %s %n", pieceName.get(target.getType()));
+    public void capture(Move move) {
+        move.captured.setColor(-1);
+        swap(move);
+        SoundManager.play("capture");
+    }
 
-        Point selectedPoint = selected.getLocation();
-        Point targetPoint = target.getLocation();
+    public void castle(Move move) {
+        SoundManager.play("castle");
+    }
 
-        int selectedRow = selected.getRow();
-        int selectedCol = selected.getCol();
+    public void promote(Move move) {
+        SoundManager.play("promote");
+    }
 
-        int targetRow = target.getRow();
-        int targetCol = target.getCol();
+    public void check(Move move) {
+        SoundManager.play("move-check");
+    }
 
-        selected.setBounds(targetPoint);
-        System.out.printf(
-                "Set %s bounds to row: %s col: %s %n",
-                pieceName.get(selected.getType()),
-                chessManager.getColumnPos(targetPoint.x),
-                chessManager.getRowPos(targetPoint.y)
-        );
-        target.setBounds(selectedPoint);
-        System.out.printf(
-                "Set %s bounds to row: %s col: %s %n",
-                pieceName.get(target.getType()),
-                chessManager.getColumnPos(selectedPoint.x),
-                chessManager.getRowPos(selectedPoint.y)
-        );
-
-        selected.setPosition(targetPoint);
-        target.setPosition(selectedPoint);
-
-        chessManager.setPiece(targetRow, targetCol, selected);
-        chessManager.setPiece(selectedRow, selectedCol, target);
-
-        selected.setSnappedPosition(targetRow, targetCol);
-        target.setSnappedPosition(selectedRow, selectedCol);
-
-        this.chessPanel.repaint();
+    public void move(Move move) {
+        swap(move);
         SoundManager.play("move-self");
+    }
+
+    public void validateMove(Piece selected, Piece target) {
+        Move move = new Move(
+                selected.getCol(),  selected.getRow(), target.getCol(), target.getRow(), selected, target
+        );
+
+        if(target.getColor() == PiecesColors.EMPTY || target.getColor() == selected.getColor()) {
+            move(move);
+        } else {
+            capture(move);
+        }
     }
 }

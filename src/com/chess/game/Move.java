@@ -1,9 +1,11 @@
 package src.com.chess.game;
 
 
+import src.com.chess.pieces.Piece;
+
 public class Move {
-    int prev_col, prev_row, new_col, new_row;
-    Piece piece, captured;
+    public int prev_col, prev_row, new_col, new_row;
+    public Piece piece, captured;
 
     public Move(
             int prev_col, int prev_row,

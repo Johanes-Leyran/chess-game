@@ -2,12 +2,10 @@ package src.com.chess.components;
 
 import src.com.chess.game.CursorHandler;
 import src.com.chess.game.FontHandler;
-import src.com.chess.game.SoundManager;
-import src.com.chess.game.SpriteSheetHandler;
+import src.com.chess.utils.SoundManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 
 public class NavPanel extends JPanel {

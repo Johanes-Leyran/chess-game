@@ -1,8 +1,9 @@
 package src.com.chess.game;
 
+import src.com.chess.utils.SpriteSheetHandler;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 

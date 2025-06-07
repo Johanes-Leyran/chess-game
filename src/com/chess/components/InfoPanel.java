@@ -12,7 +12,13 @@ public class InfoPanel extends JPanel {
     CardLayout cardLayout;
     JFrame frame;
 
-    public InfoPanel(JPanel mainPanel, CardLayout cardLayout, JFrame frame, CursorHandler cursorHandler, FontHandler fontHandler){
+    public InfoPanel(
+            JPanel mainPanel,
+            CardLayout cardLayout,
+            JFrame frame,
+            CursorHandler cursorHandler,
+            FontHandler fontHandler
+    ){
         this.setLayout(new BorderLayout());
 
         this.mainPanel = mainPanel;

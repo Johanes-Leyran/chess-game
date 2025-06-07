@@ -2,7 +2,7 @@ package src.com.chess.components;
 
 import src.com.chess.game.CursorHandler;
 import src.com.chess.game.FontHandler;
-import src.com.chess.game.SoundManager;
+import src.com.chess.utils.SoundManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -39,7 +39,7 @@ public class MenuPanel extends JPanel {
                 "Chess Game", new EmptyBorder(200, 0, 30, 0), 52
         );
         groupLabel = createLabel(
-                "Group 2 Project V 1.0.0", new EmptyBorder(0, 0, 25, 0), 16
+                "Group 2 Project V 1.0.0", new EmptyBorder(0, 0, 25, 0), 18
         );
 
         buttonPanel = new JPanel();

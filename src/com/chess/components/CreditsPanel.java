@@ -2,13 +2,11 @@ package src.com.chess.components;
 
 import src.com.chess.game.CursorHandler;
 import src.com.chess.game.FontHandler;
-import src.com.chess.game.SoundManager;
-import src.com.chess.game.SpriteSheetHandler;
+import src.com.chess.utils.SoundManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.io.IOException;
 
 public class CreditsPanel extends JPanel {
     String[] names = new String[4];
@@ -82,7 +80,7 @@ public class CreditsPanel extends JPanel {
         ));
 
         contentPanel.add(this.createLabel(
-                "Version 1.0.0",
+                "Ver 1.0.0",
                 new EmptyBorder(100, 0, 30, 0),
                 24
         ));

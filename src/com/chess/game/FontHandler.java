@@ -1,5 +1,7 @@
 package src.com.chess.game;
 
+import src.com.chess.utils.ResourceHandler;
+
 import java.awt.*;
 import java.io.IOException;
 
@@ -24,7 +26,7 @@ public class FontHandler {
         }
 
         font = Font.createFont(
-                Font.TRUETYPE_FONT, ResourceHandler.getDynamicPath("fonts/" + name)
+                Font.TRUETYPE_FONT, ResourceHandler.loadDynamicPath("fonts/" + name)
         );
     }
 

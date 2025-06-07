@@ -2,26 +2,40 @@ package src.com.chess.game;
 
 import src.com.chess.constants.PiecesColors;
 import src.com.chess.constants.PiecesType;
+import src.com.chess.pieces.Pawn;
+import src.com.chess.pieces.Piece;
+import src.com.chess.utils.Log;
+import src.com.chess.utils.SpriteSheetHandler;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 
 public class ChessManager {
-    static Piece[][] chessBoard = new Piece[8][8];
     static int[] backLine = {
             PiecesType.ROOK, PiecesType.KNIGHT, PiecesType.BISHOP, PiecesType.QUEEN, PiecesType.KING
     };
     static int[] pawnLine = {
             PiecesType.PAWN, PiecesType.PAWN, PiecesType.PAWN, PiecesType.PAWN,  PiecesType.PAWN
     };
+    static HashMap<Integer, Class<? extends Piece>> typeMap;
 
+    Piece[][] chessBoard = new Piece[8][8];
     JPanel chessPanel;
-    int chessBoardOffset;
+    int chessBoardOffset; // chess board sprite have space around the board
     double chessBoardScale;
     int chessBoardSize;
+    int rectOffset = 20;
+    double distanceThreshold = 100;
 
+    int PAWN = 0;
+    int KNIGHT = 1;
+    int ROOK = 2;
+    int BISHOP = 3;
+    int QUEEN = 4;
+    int KING = 5;
 
     public ChessManager(
             JPanel chessPanel,
@@ -33,27 +47,19 @@ public class ChessManager {
         this.chessBoardOffset = chessBoardOffset;
         this.chessBoardScale = chessBoardScale;
         this.chessBoardSize = chessBoardSize;
+
+        typeMap.put(0, Pawn.class);
     }
+
+    public Piece[][] getChessBoard() { return this.chessBoard; }
 
     public int getTileSize() { return (int)((chessBoardSize - (chessBoardOffset * 2)) * chessBoardScale) / 8; }
 
     public int getSnappedPos(int i) { return (int)(chessBoardOffset * chessBoardScale) + (getTileSize() * i); }
 
-    public int getSnappedXPos(int col ){ return getSnappedPos(col) + getTileSize() / 3; }
+    public int getSnappedXPos(int col ){ return getSnappedPos(col) + getTileSize() / 4; }
 
     public int getSnappedYPos(int row ){ return getSnappedPos(row) - getTileSize() / 7; }
-
-    public int getColumnPos(int x) {
-        int base = x - getTileSize() / 3;
-        int snappedStart = (int)(chessBoardOffset * chessBoardScale);
-        return (base - snappedStart) / getTileSize();
-    }
-
-    public int getRowPos(int y) {
-        int base = y + getTileSize() / 7;
-        int snappedStart = (int)(chessBoardOffset * chessBoardScale);
-        return (base - snappedStart) / getTileSize();
-    }
 
     public Rectangle getTileBounds(int col, int row) {
         return new Rectangle(
@@ -65,17 +71,18 @@ public class ChessManager {
     }
 
     public Rectangle setUpRect(int x, int y, BufferedImage sprite) {
-        return new Rectangle(x, y, sprite.getWidth(), sprite.getHeight());
+        return new Rectangle(x, y + this.rectOffset, sprite.getWidth(), sprite.getHeight() - this.rectOffset);
     }
 
     public void setUpLine(
             SpriteSheetHandler spriteSheet, int color, int row, int[] line, boolean empty
     ) {
+        int indexStartingLine;
+
         for(int col = 0;col < 8;col++) {
-            int indexStartingLine;
+            indexStartingLine = col;
 
             if(col > 4) indexStartingLine = 7 - col;
-            else indexStartingLine = col;
 
             BufferedImage sprite = spriteSheet.getSprite(0, line[indexStartingLine]);
             int positionX = getSnappedXPos(col);
@@ -86,10 +93,9 @@ public class ChessManager {
                     positionY,
                     sprite
             );
-
             chessBoard[row][col] = new Piece(
                     color,
-                    empty ? PiecesType.EMPTY : line[indexStartingLine],
+                    line[indexStartingLine],
                     sprite,
                     col,
                     row,
@@ -101,6 +107,7 @@ public class ChessManager {
     }
 
     public void setUpPieces(){
+        // todo: make this more simple and use typeMap hashmap
         SpriteSheetHandler whitePieces = new SpriteSheetHandler(
                 "white_pieces.png", 16, 32, 3
         );
@@ -119,20 +126,17 @@ public class ChessManager {
     }
 
     public void drawPieces(Graphics g) {
-        int tileSize = getTileSize();
-        int leftMargin = tileSize / 4;
-
         for(int row = 0;row < 8;row++) {
             for(int col = 0;col < 8;col++) {
                 Piece piece = chessBoard[row][col];
 
-                if(piece == null || piece.getColor().equals("EMPTY") || piece.isDragged)
+                if(piece.getColor() == PiecesColors.EMPTY || piece.isDragged())
                     continue;
 
                 g.drawImage(
-                        piece.sprite,
-                        getSnappedPos(col) + leftMargin,
-                        getSnappedPos(row) - tileSize / 7,
+                        piece.getSprite(),
+                        getSnappedXPos(piece.getCol()),
+                        getSnappedYPos(piece.getRow()),
                         null
                 );
             }
@@ -143,7 +147,20 @@ public class ChessManager {
         if(piece == null)
             return;
 
-        g.drawImage(piece.sprite, piece.x, piece.y, null);
+        g.drawImage(piece.getSprite(), piece.getXPosition(), piece.getYPosition(), null);
+    }
+
+    public void drawRect(Graphics g) {
+        if(Globals.getLevel() < 2) {
+            return;
+        }
+
+        for(int row = 0;row < 8;row++) {
+            for(int col = 0;col < 8;col++) {
+                Rectangle rect = chessBoard[row][col].getBounds();
+                g.drawRect(rect.x, rect.y, rect.width, rect.height);
+            }
+        }
     }
 
     public Piece getPiece(int row, int col) { return chessBoard[row][col]; }
@@ -152,14 +169,19 @@ public class ChessManager {
         chessBoard[row][col] = piece;
     }
 
+    public void updatePiece(int new_row, int new_col, Piece piece) {
+        piece.setBounds(setUpRect(getSnappedXPos(new_col), getSnappedYPos(new_row), piece.getSprite()));
+        setPiece(new_row, new_col, piece);
+        piece.setSnappedPosition(new_row, new_col);
+        chessPanel.repaint();
+    }
+
     public Piece checkBounds(Point point) {
         for(int row = 0;row < 8 ;row++) {
             for(int col = 0;col < 8;col++) {
                 Piece piece = getPiece(row, col);
 
-                if(piece.getBounds().contains(point)) {
-                    return piece;
-                }
+                if(piece.getBounds().contains(point)) return piece;
             }
         }
         return null;
@@ -173,7 +195,9 @@ public class ChessManager {
             for(int col = 0;col < 8;col++) {
                 Piece currentPiece = getPiece(row, col);
 
-                double distance = piece.getMiddlePoint().distance(currentPiece.getRectMiddlePoint());
+                double distance = piece.getMiddlePoint().distance(
+                        currentPiece.getRectMiddlePoint()
+                );
 
                 if(distance < nearestDistance) {
                     nearestPiece = currentPiece;
@@ -181,6 +205,17 @@ public class ChessManager {
                 }
             }
         }
+
+        if(nearestDistance > this.distanceThreshold) {
+            Log.INFO(String.format(
+                    "%s Nearest piece exceeds threshold of %s < %.2f, disregarding move",
+                    this.getClass().getSimpleName(),
+                    this.distanceThreshold,
+                    nearestDistance
+            ));
+            return piece;
+        }
+
         return nearestPiece;
     }
 }

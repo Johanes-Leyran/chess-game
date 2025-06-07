@@ -1,8 +1,7 @@
-package src.com.chess.game;
+package src.com.chess.utils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 
 public class SpriteSheetHandler {

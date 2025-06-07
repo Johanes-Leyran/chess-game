@@ -1,4 +1,4 @@
-package src.com.chess.game;
+package src.com.chess.utils;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -23,15 +23,17 @@ public class SoundManager {
             AudioInputStream audioInputStream = null;
             try {
                 audioInputStream = AudioSystem.getAudioInputStream(
-                        ResourceHandler.getDynamicPath(String.format("sounds/%s.wav", name))
+                        ResourceHandler.loadDynamicPath(String.format("sounds/%s.wav", name))
                 );
+                Log.INFO(String.format("%s Load sound: %s.wav", SoundManager.class.getSimpleName() ,name));
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioInputStream);
                 soundMap.put(name, clip);
+
             } catch (UnsupportedAudioFileException e) {
                 throw new RuntimeException("Only .wav format is supported");
             } catch (LineUnavailableException e) {
-                throw new RuntimeException("");
+                throw new RuntimeException("Line Unavailable can't be opened");
             } catch (IOException e) {
                 throw new RuntimeException("Could not found audio: " + name);
             }
