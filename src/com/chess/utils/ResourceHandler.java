@@ -1,4 +1,4 @@
-package src.com.chess.game;
+package src.com.chess.utils;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 
 public class ResourceHandler {
-    public static InputStream getDynamicPath(String path){
+    public static InputStream loadDynamicPath(String path){
         return ResourceHandler.class
                 .getClassLoader()
                 .getResourceAsStream("./resource/" + path);
@@ -16,7 +16,9 @@ public class ResourceHandler {
 
     public static BufferedImage loadImage(String path){
         try {
-            return ImageIO.read(getDynamicPath("sprites/" + path));
+            BufferedImage img = ImageIO.read(loadDynamicPath("sprites/" + path));
+            Log.debug("Load image: " + path);
+            return img;
         } catch (IOException e) {
             throw new RuntimeException("Unable to load image at path: " + path);
         }
@@ -28,7 +30,7 @@ public class ResourceHandler {
     public static Clip loadSound(String path) throws
             IOException, UnsupportedAudioFileException, LineUnavailableException
     {
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getDynamicPath("sounds/" + path));
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(loadDynamicPath("sounds/" + path));
         Clip clip = AudioSystem.getClip();
         clip.open(audioInputStream);
 

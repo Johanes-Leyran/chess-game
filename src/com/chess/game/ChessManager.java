@@ -2,6 +2,7 @@ package src.com.chess.game;
 
 import src.com.chess.constants.PiecesColors;
 import src.com.chess.constants.PiecesType;
+import src.com.chess.utils.SpriteSheetHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +22,7 @@ public class ChessManager {
     int chessBoardOffset;
     double chessBoardScale;
     int chessBoardSize;
+    int rectOffset = 20;
 
 
     public ChessManager(
@@ -39,7 +41,7 @@ public class ChessManager {
 
     public int getSnappedPos(int i) { return (int)(chessBoardOffset * chessBoardScale) + (getTileSize() * i); }
 
-    public int getSnappedXPos(int col ){ return getSnappedPos(col) + getTileSize() / 3; }
+    public int getSnappedXPos(int col ){ return getSnappedPos(col) + getTileSize() / 4; }
 
     public int getSnappedYPos(int row ){ return getSnappedPos(row) - getTileSize() / 7; }
 
@@ -65,7 +67,7 @@ public class ChessManager {
     }
 
     public Rectangle setUpRect(int x, int y, BufferedImage sprite) {
-        return new Rectangle(x, y, sprite.getWidth(), sprite.getHeight());
+        return new Rectangle(x, y + this.rectOffset, sprite.getWidth(), sprite.getHeight() - this.rectOffset);
     }
 
     public void setUpLine(
@@ -131,8 +133,8 @@ public class ChessManager {
 
                 g.drawImage(
                         piece.sprite,
-                        getSnappedPos(col) + leftMargin,
-                        getSnappedPos(row) - tileSize / 7,
+                        getSnappedXPos(col),
+                        getSnappedYPos(row),
                         null
                 );
             }
@@ -144,6 +146,15 @@ public class ChessManager {
             return;
 
         g.drawImage(piece.sprite, piece.x, piece.y, null);
+    }
+
+    public void drawRect(Graphics g) {
+        for(int row = 0;row < 8;row++) {
+            for(int col = 0;col < 8;col++) {
+                Rectangle rect = chessBoard[row][col].getBounds();
+                g.drawRect(rect.x, rect.y, rect.width, rect.height);
+            }
+        }
     }
 
     public Piece getPiece(int row, int col) { return chessBoard[row][col]; }
@@ -173,7 +184,9 @@ public class ChessManager {
             for(int col = 0;col < 8;col++) {
                 Piece currentPiece = getPiece(row, col);
 
-                double distance = piece.getMiddlePoint().distance(currentPiece.getRectMiddlePoint());
+                double distance = piece.getMiddlePoint().distance(
+                        currentPiece.getRectMiddlePoint()
+                );
 
                 if(distance < nearestDistance) {
                     nearestPiece = currentPiece;

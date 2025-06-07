@@ -4,6 +4,7 @@ import src.com.chess.adapter.ChessMotionAdapter;
 import src.com.chess.adapter.ChessMouseAdapter;
 import src.com.chess.adapter.StateAdapter;
 import src.com.chess.game.*;
+import src.com.chess.utils.SpriteSheetHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,9 +47,8 @@ public class ChessPanel extends JPanel {
         this.udpateLoopTimer.start();
         this.stateAdapter = new StateAdapter();
 
-        this.addMouseListener(new ChessMouseAdapter(
-                this.chessManager, this.cursorHandler, stateAdapter, new MoveHandler(chessManager, this))
-        );
+        MoveHandler moveHandler = new MoveHandler(chessManager, this);
+        this.addMouseListener(new ChessMouseAdapter(this.chessManager, this.cursorHandler, stateAdapter, moveHandler));
         this.addMouseMotionListener(new ChessMotionAdapter(this.chessManager, this.cursorHandler, stateAdapter));
     }
 
@@ -59,6 +59,7 @@ public class ChessPanel extends JPanel {
                 this.chessBoardImg, 0, 0, null
         );
         chessManager.drawPieces(g);
+        chessManager.drawRect(g);
         chessManager.drawSinglePiece(g, stateAdapter.getSelected());
     }
 }

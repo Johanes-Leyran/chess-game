@@ -2,7 +2,7 @@ package src.com.chess.components;
 
 import src.com.chess.game.CursorHandler;
 import src.com.chess.game.FontHandler;
-import src.com.chess.game.ResourceHandler;
+import src.com.chess.utils.ResourceHandler;
 
 import javax.swing.*;
 import java.awt.*;
