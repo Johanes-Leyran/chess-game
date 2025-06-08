@@ -2,6 +2,8 @@ package src.com.chess.game;
 
 import src.com.chess.constants.PiecesColors;
 import src.com.chess.constants.PiecesType;
+import src.com.chess.pieces.Piece;
+import src.com.chess.utils.SpriteSheetHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,7 +91,7 @@ public class ChessManager {
 
             chessBoard[row][col] = new Piece(
                     color,
-                    empty ? PiecesType.EMPTY : line[indexStartingLine],
+                    line[indexStartingLine],
                     sprite,
                     col,
                     row,
@@ -126,11 +128,11 @@ public class ChessManager {
             for(int col = 0;col < 8;col++) {
                 Piece piece = chessBoard[row][col];
 
-                if(piece == null || piece.getColor().equals("EMPTY") || piece.isDragged)
+                if(piece == null || piece.getColor() == PiecesColors.EMPTY || piece.isDragged())
                     continue;
 
                 g.drawImage(
-                        piece.sprite,
+                        piece.getSprite(),
                         getSnappedPos(col) + leftMargin,
                         getSnappedPos(row) - tileSize / 7,
                         null
@@ -143,7 +145,7 @@ public class ChessManager {
         if(piece == null)
             return;
 
-        g.drawImage(piece.sprite, piece.x, piece.y, null);
+        g.drawImage(piece.getSprite(), piece.getXPosition(), piece.getYPosition(), null);
     }
 
     public Piece getPiece(int row, int col) { return chessBoard[row][col]; }
