@@ -1,6 +1,4 @@
-package src.com.chess.pieces;
-
-import src.com.chess.game.Move;
+package src.com.chess.game;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

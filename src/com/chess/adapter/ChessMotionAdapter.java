@@ -1,6 +1,6 @@
 package src.com.chess.adapter;
 
-import src.com.chess.pieces.Piece;
+import src.com.chess.game.Piece;
 import src.com.chess.game.ChessManager;
 import src.com.chess.game.CursorHandler;
 

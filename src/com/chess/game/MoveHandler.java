@@ -2,7 +2,6 @@ package src.com.chess.game;
 
 
 import src.com.chess.constants.PiecesColors;
-import src.com.chess.pieces.Piece;
 import src.com.chess.utils.SoundManager;
 
 import java.util.ArrayList;
