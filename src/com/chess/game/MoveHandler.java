@@ -31,15 +31,13 @@ public class MoveHandler {
 
     public void revertMove(Move move) {}
 
-    // todo: inconsistent dragging mechanics
-    // todo: hovering mouse at same piece after moving does not show the toHold mouse cursor
-
     public void swap(Move move) {
         chessManager.updatePiece(move.new_row, move.new_col, move.piece);
         chessManager.updatePiece(move.prev_row, move.prev_col, move.captured);
     }
 
     public void capture(Move move) {
+        // todo: more capture logics
         move.captured.setColor(-1);
         swap(move);
         SoundManager.play("capture");

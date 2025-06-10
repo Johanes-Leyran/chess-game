@@ -14,7 +14,8 @@ public class Piece {
      boolean isDragged = false;
      BufferedImage sprite;
 
-
+     // param x and y could be omitted in constructor and add a method
+     // that returns the x, y position using getSnappedPosition instead
      public Piece(
              int color,
              int type,
@@ -101,31 +102,13 @@ public class Piece {
 
      public int getYPosition() { return this.y; }
 
-     public int getRow() {
-          return this.row;
-     }
+     public int getRow() { return this.row; }
 
-     public int getCol() {
-          return this.col;
-     }
+     public int getCol() { return this.col; }
 
-     public void setIsDragged(boolean b) {
-          this.isDragged = b;
-     }
+     public void setIsDragged(boolean b) { this.isDragged = b; }
 
-     public Rectangle getBounds() {
-          return this.rect;
-     }
+     public Rectangle getBounds() { return this.rect; }
 
-     public void setBounds(Rectangle rect) {
-          this.rect = rect;
-     }
-
-     public boolean showAvailableMoves() {
-          return false;
-     }
-
-     public boolean isValidMove(Move move, Piece[][] chessboard) {
-          return false;
-     }
+     public void setBounds(Rectangle rect) { this.rect = rect; }
 }

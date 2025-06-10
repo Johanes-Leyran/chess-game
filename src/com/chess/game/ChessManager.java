@@ -9,7 +9,6 @@ import src.com.chess.utils.SpriteSheetHandler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 
 
 public class ChessManager {
@@ -28,12 +27,6 @@ public class ChessManager {
     int rectOffset = 20;
     double distanceThreshold = 100;
 
-    int PAWN = 0;
-    int KNIGHT = 1;
-    int ROOK = 2;
-    int BISHOP = 3;
-    int QUEEN = 4;
-    int KING = 5;
 
     public ChessManager(
             JPanel chessPanel,
@@ -81,6 +74,7 @@ public class ChessManager {
             if(col > 4) indexStartingLine = 7 - col;
 
             BufferedImage sprite = spriteSheet.getSprite(0, line[indexStartingLine]);
+
             int positionX = getSnappedXPos(col);
             int positionY = getSnappedYPos(row);
 
@@ -103,7 +97,6 @@ public class ChessManager {
     }
 
     public void setUpPieces(){
-        // todo: make this more simple and use typeMap hashmap
         SpriteSheetHandler whitePieces = new SpriteSheetHandler(
                 "white_pieces.png", 16, 32, 3
         );
@@ -140,10 +133,36 @@ public class ChessManager {
     }
 
     public void drawSinglePiece(Graphics g, Piece piece) {
-        if(piece == null)
+        if(piece == null) // just to be sure
             return;
 
         g.drawImage(piece.getSprite(), piece.getXPosition(), piece.getYPosition(), null);
+    }
+
+    // note to self: this does not change the actual position in chess board only animation
+    public void slidePiece(Graphics g, Piece piece, int target_col, int target_row) {
+        Point startingPos = piece.getLocation();
+        Point targetPos = new Point(getSnappedXPos(target_col), getSnappedYPos(target_row));
+
+        int step = 5;
+        double targetDistance = startingPos.distance(targetPos);
+        double coveredDistance = 0;
+
+        double vectorX = (startingPos.getX() - targetPos.getX()) / targetDistance;
+        double vectorY = (startingPos.getY() - targetPos.getY()) / targetDistance;
+
+        while(coveredDistance <= targetDistance) {
+            double currentStep = Math.min(step, targetDistance - coveredDistance);
+
+            piece.setPosition(
+                    (int) (piece.getXPosition() + vectorX * currentStep),
+                    (int) (piece.getYPosition() + vectorY * currentStep)
+            );
+            drawSinglePiece(g, piece);
+            coveredDistance += currentStep;
+        }
+
+        piece.setPosition(targetPos);
     }
 
     public void drawRect(Graphics g) {
@@ -180,6 +199,7 @@ public class ChessManager {
                 if(piece.getBounds().contains(point)) return piece;
             }
         }
+
         return null;
     }
 
