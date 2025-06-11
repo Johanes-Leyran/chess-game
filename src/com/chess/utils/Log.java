@@ -30,7 +30,6 @@ public class Log {
         print("[DEBUG]", msg, YELLOW, 2);
     }
 
-    // I don't know why I made error log
     public static void WARN(String msg) {
         print("[WARNING]", msg, RED, 3);
     }

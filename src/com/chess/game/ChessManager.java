@@ -2,7 +2,6 @@ package src.com.chess.game;
 
 import src.com.chess.constants.PiecesColors;
 import src.com.chess.constants.PiecesType;
-import src.com.chess.game.Piece;
 import src.com.chess.utils.Log;
 import src.com.chess.utils.SpriteSheetHandler;
 
@@ -114,11 +113,13 @@ public class ChessManager {
         setUpLine(whitePieces, PiecesColors.WHITE, 7, backLine, false);
     }
 
+    // draws the pieces in base on their col and row position
     public void drawPieces(Graphics g) {
         for(int row = 0;row < 8;row++) {
             for(int col = 0;col < 8;col++) {
                 Piece piece = chessBoard[row][col];
 
+                // don't draw the piece if its being dragged
                 if(piece.getColor() == PiecesColors.EMPTY || piece.isDragged())
                     continue;
 
@@ -132,17 +133,18 @@ public class ChessManager {
         }
     }
 
+    // draw a piece based on its x and y pos
     public void drawSinglePiece(Graphics g, Piece piece) {
-        if(piece == null) // just to be sure
-            return;
+        if(piece == null) return;
 
         g.drawImage(piece.getSprite(), piece.getXPosition(), piece.getYPosition(), null);
     }
 
-    // note to self: this does not change the actual position in chess board only animation
+    // note to self: this does not change the actual position in chess board only animation and its x y pos
     public void slidePiece(Graphics g, Piece piece, int target_col, int target_row) {
         Point startingPos = piece.getLocation();
         Point targetPos = new Point(getSnappedXPos(target_col), getSnappedYPos(target_row));
+        piece.setIsDragged(true);
 
         int step = 5;
         double targetDistance = startingPos.distance(targetPos);
@@ -163,8 +165,10 @@ public class ChessManager {
         }
 
         piece.setPosition(targetPos);
+        piece.setIsDragged(false);
     }
 
+    // only for debug
     public void drawRect(Graphics g) {
         if(Globals.getLevel() < 2) {
             return;

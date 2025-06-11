@@ -2,6 +2,7 @@ package src.com.chess.game;
 
 
 import src.com.chess.constants.PiecesColors;
+import src.com.chess.utils.Log;
 import src.com.chess.utils.SoundManager;
 
 import java.util.ArrayList;
@@ -37,6 +38,10 @@ public class MoveHandler {
     }
 
     public void capture(Move move) {
+        Log.INFO(String.format(
+                "%s Move Type: Capture",
+                this.getClass().getSimpleName()
+        ));
         // todo: more capture logics
         move.captured.setColor(-1);
         swap(move);
@@ -44,18 +49,35 @@ public class MoveHandler {
     }
 
     public void castle(Move move) {
+        Log.INFO(String.format(
+                "%s  Move Type: Castle",
+                this.getClass().getSimpleName()
+        ));
+
         SoundManager.play("castle");
     }
 
     public void promote(Move move) {
+        Log.INFO(String.format(
+                "%s  Move Type: Promote",
+                this.getClass().getSimpleName()
+        ));
+
         SoundManager.play("promote");
     }
 
     public void check(Move move) {
+        Log.INFO(String.format(
+                "%s  Move Type: Check",
+                this.getClass().getSimpleName()
+        ));
+
         SoundManager.play("move-check");
     }
 
     public void move(Move move) {
+
+
         swap(move);
         SoundManager.play("move-self");
     }
@@ -65,9 +87,17 @@ public class MoveHandler {
                 selected.getCol(),  selected.getRow(), target.getCol(), target.getRow(), selected, target
         );
 
-        if(target.getColor() == PiecesColors.EMPTY || target.getColor() == selected.getColor()) {
-            move(move);
-        } else {
+        boolean isValidMove = MoveValidator.validateMove(move, chessManager.getChessBoard(), moveHistory);
+
+        if(!isValidMove) {
+            Log.INFO(String.format(
+                    "%s Not A valid move! Aborting...",
+                    this.getClass().getSimpleName()
+            ));
+            return;
+        }
+
+        if(move.isEnPassant || move.isCapture) {
             capture(move);
         }
     }

@@ -23,7 +23,7 @@ public class ChessPanel extends JPanel {
 
     public ChessPanel(ComponentData componentData, CursorHandler cursorHandler){
         this.componentData = componentData;
-        this.FPS = 60;
+        this.FPS = Globals.getFps();
         this.chessManager = new ChessManager(
                 this,
                 this.componentData.chessBoardOffset,
@@ -59,7 +59,12 @@ public class ChessPanel extends JPanel {
         g.drawImage(
                 this.chessBoardImg, 0, 0, null
         );
+
+        if(Globals.getShowRect())
+            chessManager.drawRect(g);
+
         chessManager.drawPieces(g);
+        // draw dragged piece last so it will be on top of all sprites
         chessManager.drawSinglePiece(g, stateAdapter.getSelected());
     }
 }

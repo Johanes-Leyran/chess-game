@@ -12,6 +12,7 @@ public class Piece {
 
      Rectangle rect;
      boolean isDragged = false;
+     boolean isMoved = false;
      BufferedImage sprite;
 
      // param x and y could be omitted in constructor and add a method
@@ -34,6 +35,13 @@ public class Piece {
           this.rect = rect;
           this.x = x;
           this.y = y;
+     }
+
+     public Piece(Piece other) {
+          // only necessary for simulating the chess board
+          this.color = other.color;
+          this.type = other.type;
+          this.isMoved = other.isMoved;
      }
 
      public BufferedImage getSprite() {
@@ -97,6 +105,10 @@ public class Piece {
           this.x = x;
           this.y = y;
      }
+
+     public boolean isMoved() { return this.isMoved; }
+
+     public void setIsMove(boolean b) { this.isMoved = b; }
 
      public int getXPosition() { return this.x; }
 
