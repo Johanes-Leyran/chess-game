@@ -1,9 +1,14 @@
 package src.com.chess.game;
 
-public enum GameState {
-    ONGOING,
-    CHECKMATE_WHITE,
-    CHECKMATE_BLACK,
-    STALEMATE,
-    INSUFFICIENT_MATERIAL
+
+public class GameState {
+    String state;
+
+    public GameState(String state) { this.state = state; }
+
+    public void setState(String state) { this.state = state; }
+
+    public String getState() {
+        return this.state;
+    }
 }

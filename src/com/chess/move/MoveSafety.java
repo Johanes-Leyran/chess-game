@@ -1,0 +1,47 @@
+package src.com.chess.move;
+
+import src.com.chess.game.Piece;
+
+import java.util.ArrayList;
+
+public class MoveSafety {
+
+    public static boolean isKingSafe(Piece[][] board, int color) {
+        int[] king = MoveFlagger.findKing(board, color);
+        if (king == null) return false;
+        return isSquareSafe(king[0], king[1], 1 - color, board);
+    }
+
+    public static boolean isSquareSafe(int row, int col, int attackerColor, Piece[][] board) {
+        for (int r = 0; r < 8; r++)
+            for (int c = 0; c < 8; c++) {
+                Piece attacker = board[r][c];
+                if (attacker != null && attacker.getColor() == attackerColor) {
+                    Move pseudo = new Move(c, r, col, row, attacker, board[row][col]);
+                    if (PseudoMoveValidator.validate(pseudo, board, null)) {
+                        return false;
+                    }
+                }
+            }
+        return true;
+    }
+
+    public static boolean hasLegalMove(Piece[][] board, ArrayList<Move> history, int color, int r, int c) {
+        Piece piece = board[r][c];
+        if (piece == null || piece.getColor() != color) return false;
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Move move = new Move(c, r, col, row, piece, board[row][col]);
+                if (!PseudoMoveValidator.validate(move, board, history)) continue;
+
+                Piece[][] copy = MoveValidator.deepCopyBoard(board);
+                MoveSimulator.apply(move, copy);
+
+                if (isKingSafe(copy, color)) return true;
+            }
+        }
+
+        return false;
+    }
+}

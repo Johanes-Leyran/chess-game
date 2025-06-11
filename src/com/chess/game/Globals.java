@@ -48,7 +48,5 @@ public class Globals {
         print("Show Piece Rectangle: true");
     }
 
-    public static boolean getShowRect() {
-        return showRect;
-    }
+    public static boolean getShowRect() { return showRect; }
 }

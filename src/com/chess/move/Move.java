@@ -1,13 +1,13 @@
-package src.com.chess.game;
+package src.com.chess.move;
 
+
+import src.com.chess.game.Piece;
 
 public class Move {
     public int prev_col, prev_row, new_col, new_row;
     public Piece piece, captured;
     public boolean isEnPassant = false;
     public boolean isCastle = false;
-    public boolean isPromote = false;
-    public boolean isCapture = false;
     public boolean isCheck = false;
 
 

@@ -1,7 +1,7 @@
 package src.com.chess.adapter;
 
 import src.com.chess.constants.PiecesColors;
-import src.com.chess.game.MoveHandler;
+import src.com.chess.move.MoveHandler;
 import src.com.chess.game.Piece;
 import src.com.chess.game.ChessManager;
 import src.com.chess.game.CursorHandler;

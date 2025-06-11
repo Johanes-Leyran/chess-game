@@ -30,6 +30,7 @@ public class Log {
         print("[DEBUG]", msg, YELLOW, 2);
     }
 
+    // I don't know why I made warn, I can just throw an exception much better that way
     public static void WARN(String msg) {
         print("[WARNING]", msg, RED, 3);
     }

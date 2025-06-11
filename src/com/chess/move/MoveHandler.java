@@ -1,7 +1,8 @@
-package src.com.chess.game;
+package src.com.chess.move;
 
 
-import src.com.chess.constants.PiecesColors;
+import src.com.chess.game.ChessManager;
+import src.com.chess.game.Piece;
 import src.com.chess.utils.Log;
 import src.com.chess.utils.SoundManager;
 
@@ -87,18 +88,6 @@ public class MoveHandler {
                 selected.getCol(),  selected.getRow(), target.getCol(), target.getRow(), selected, target
         );
 
-        boolean isValidMove = MoveValidator.validateMove(move, chessManager.getChessBoard(), moveHistory);
-
-        if(!isValidMove) {
-            Log.INFO(String.format(
-                    "%s Not A valid move! Aborting...",
-                    this.getClass().getSimpleName()
-            ));
-            return;
-        }
-
-        if(move.isEnPassant || move.isCapture) {
-            capture(move);
-        }
+        // todo: implement this shit and finish the game
     }
 }
