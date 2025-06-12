@@ -3,6 +3,7 @@ package src.com.chess.move;
 
 import src.com.chess.constants.PiecesColors;
 import src.com.chess.game.ChessManager;
+import src.com.chess.game.GameState;
 import src.com.chess.game.Piece;
 import src.com.chess.utils.Log;
 import src.com.chess.utils.SoundManager;
@@ -11,13 +12,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MoveHandler {
-    static ArrayList<Move> moveHistory; // could use a linked list instead
+    static ArrayList<Move> moveHistory = new ArrayList<>(); // could use a linked list instead
     static HashMap<Integer, String> pieceName = new HashMap<>();
 
     ChessManager chessManager;
+    GameState gameState;
 
-    public MoveHandler(ChessManager chessManager) {
+    public MoveHandler(ChessManager chessManager, GameState gameState) {
         this.chessManager = chessManager;
+        this.gameState = gameState;
 
         pieceName.put(-1, "EMPTY");
         pieceName.put(0, "PAWN");
@@ -30,7 +33,7 @@ public class MoveHandler {
 
     public ArrayList<Move> getMoveHistory() { return moveHistory; }
 
-    public void revertMove(Move move) {}
+    public void revertMove(Move move) {} // will not implement this, not enough time
 
     public void swap(Move move) {
         chessManager.updatePiece(move.new_row, move.new_col, move.piece);
@@ -61,18 +64,41 @@ public class MoveHandler {
         move.captured = board[capturedRow][capturedCol];
         board[capturedRow][capturedCol].setColor(PiecesColors.EMPTY);
 
-        swap(move); // move capturing pawn
+        swap(move); // Move capturing pawn
         SoundManager.play("capture");
     }
 
     public void castle(Move move) {
-        Log.INFO(String.format(
-                "%s Castling...",
-                this.getClass().getSimpleName()
-        ));
+            Log.INFO(String.format("%s Castling...", this.getClass().getSimpleName()));
 
-        swap(move);
-        SoundManager.play("castle");
+            int row = move.new_row; // The king and rook are on the same row
+            int oldKingCol = move.prev_col;
+            int newKingCol = move.new_col;
+
+            boolean isKingSide = newKingCol > oldKingCol;
+
+            int rookStartCol = isKingSide ? 7 : 0;
+            int rookTargetCol = isKingSide ? newKingCol - 1 : newKingCol + 1;
+
+            Piece[][] board = chessManager.getChessBoard();
+            Piece rook = board[row][rookStartCol];
+
+            if (rook == null) {
+                Log.DEBUG("Rook not found for castling");
+                return;
+            }
+
+            // Move the King
+            Move kingMove = new Move(oldKingCol, row, newKingCol, row, move.piece, board[row][newKingCol]);
+            swap(kingMove);
+
+            // Move the Rook
+            Move rookMove = new Move(rookStartCol, row, rookTargetCol, row, rook, board[row][rookTargetCol]);
+            // Set the x y pos of the rook since it did not go through ChessMouseAdapter
+            rook.setPosition(chessManager.getSnappedXPos(rookTargetCol), chessManager.getSnappedYPos(row));
+            swap(rookMove);
+
+            SoundManager.play("castle");
     }
 
     public void promote(Move move) {
@@ -80,6 +106,8 @@ public class MoveHandler {
                 "%s  Move Type: Promote",
                 this.getClass().getSimpleName()
         ));
+
+        // add a pop-up menu here
 
         SoundManager.play("promote");
     }
@@ -104,14 +132,12 @@ public class MoveHandler {
                 pieceName.get(move.piece.getType()),
                 move.piece.getStringColor()
         ));
-
         Log.DEBUG(String.format(
                 "%s Piece Target Type: %s Color: %s",
                 this.getClass().getSimpleName(),
                 pieceName.get(move.captured.getType()),
                 move.captured.getStringColor()
         ));
-
         Log.DEBUG(String.format(
                 "%s Make a move: from row: %s col: %s to row: %s col: %s",
                 this.getClass().getSimpleName(),
@@ -136,6 +162,8 @@ public class MoveHandler {
             move(move);
         }
 
+        moveHistory.add(move);
+        gameState.checkState(moveHistory, chessManager);
         return true;
     }
 }

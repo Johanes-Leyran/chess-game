@@ -3,6 +3,7 @@ package src.com.chess.components;
 import src.com.chess.adapter.ChessMotionAdapter;
 import src.com.chess.adapter.ChessMouseAdapter;
 import src.com.chess.adapter.StateAdapter;
+import src.com.chess.constants.PiecesColors;
 import src.com.chess.game.*;
 import src.com.chess.move.MoveHandler;
 import src.com.chess.utils.SpriteSheetHandler;
@@ -23,7 +24,7 @@ public class ChessPanel extends JPanel {
     MoveHandler moveHandler;
 
 
-    public ChessPanel(ComponentData componentData, CursorHandler cursorHandler){
+    public ChessPanel(ComponentData componentData, CursorHandler cursorHandler, GameState gameState){
         this.componentData = componentData;
         this.FPS = Globals.getFps();
         this.chessManager = new ChessManager(
@@ -40,7 +41,7 @@ public class ChessPanel extends JPanel {
                 this.componentData.chessBoardScale
         ).getSprite(0, 0);
         this.cursorHandler = cursorHandler;
-        this.setPreferredSize( new Dimension(
+        this.setPreferredSize(new Dimension(
                 chessBoardImg.getWidth(),
                 chessBoardImg.getHeight()
         ));
@@ -49,11 +50,13 @@ public class ChessPanel extends JPanel {
         this.udpateLoopTimer.start();
         this.stateAdapter = new StateAdapter();
 
-        this.moveHandler = new MoveHandler(chessManager);
+        this.moveHandler = new MoveHandler(chessManager, gameState);
         this.addMouseListener(new ChessMouseAdapter(
-                this.chessManager, this.cursorHandler, stateAdapter, moveHandler)
-        );
-        this.addMouseMotionListener(new ChessMotionAdapter(this.chessManager, this.cursorHandler, stateAdapter));
+                this.chessManager, this.cursorHandler, stateAdapter, moveHandler, gameState
+        ));
+        this.addMouseMotionListener(new ChessMotionAdapter(
+                this.chessManager, this.cursorHandler, stateAdapter, gameState
+        ));
     }
 
     @Override
@@ -67,6 +70,8 @@ public class ChessPanel extends JPanel {
             ChessPainter.drawAllRect(g, chessManager);
 
         ChessPainter.drawValidMoves(g, stateAdapter.getSelected(), chessManager, moveHandler.getMoveHistory());
+        ChessPainter.drawRedSquare(g, chessManager, PiecesColors.WHITE);
+        ChessPainter.drawRedSquare(g, chessManager, PiecesColors.BLACK);
         ChessPainter.drawPieces(g, chessManager);
         ChessPainter.drawSinglePiece(g, stateAdapter.getSelected());
     }

@@ -1,6 +1,7 @@
 package src.com.chess.adapter;
 
 import src.com.chess.constants.PiecesColors;
+import src.com.chess.game.GameState;
 import src.com.chess.game.Piece;
 import src.com.chess.game.ChessManager;
 import src.com.chess.game.CursorHandler;
@@ -13,22 +14,31 @@ public class ChessMotionAdapter extends MouseMotionAdapter {
     ChessManager chessManager;
     CursorHandler cursorHandler;
     StateAdapter stateAdapter;
+    GameState gameState;
     boolean hovering;
 
 
     public ChessMotionAdapter(
-            ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter
+            ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter, GameState gameState
     ) {
         this.chessManager = chessManager;
         this.cursorHandler = cursorHandler;
         this.stateAdapter = stateAdapter;
+        this.gameState = gameState;
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if(gameState.getState() != GameState.State.ONGOING)
+            return;
+
         Piece piece = chessManager.checkBounds(e.getPoint());
 
-        if(piece != null && !hovering && piece.getType() != PiecesColors.EMPTY && piece.getColor() == this.stateAdapter.colorTurn) {
+        if(piece != null &&
+                !hovering &&
+                piece.getType() != PiecesColors.EMPTY
+                && piece.getColor() == this.stateAdapter.colorTurn
+        ) {
             cursorHandler.setCursor("toGrab");
             hovering = true;
         }

@@ -60,6 +60,10 @@ public class MoveSafety {
         return false;
     }
 
+    public static boolean isEmpty(Piece piece) {
+        return piece == null || piece.getColor() == PiecesColors.EMPTY;
+    }
+
     public static boolean isLinearPathClear(Move move, Piece[][] board) {
         int dr = move.new_row - move.prev_row;
         int dc = move.new_col - move.prev_col;
@@ -71,7 +75,8 @@ public class MoveSafety {
         int col = move.prev_col + stepCol;
 
         while (row != move.new_row || col != move.new_col) {
-            if (board[row][col].getColor() != PiecesColors.EMPTY) return false;
+            if (!isEmpty(board[row][col])) return false; // It should be not empty but for some case it is
+
             row += stepRow;
             col += stepCol;
         }

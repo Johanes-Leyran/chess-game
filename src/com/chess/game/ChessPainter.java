@@ -2,6 +2,7 @@ package src.com.chess.game;
 
 import src.com.chess.constants.PiecesColors;
 import src.com.chess.move.Move;
+import src.com.chess.move.MoveSafety;
 import src.com.chess.move.MoveValidator;
 import src.com.chess.move.PseudoMoveValidator;
 
@@ -78,6 +79,32 @@ public class ChessPainter {
         }
     }
 
+    // draw red square if a king piece is being attack
+    public static void drawRedSquare(Graphics g, ChessManager chessManager, int color) {
+        Piece[][] board = chessManager.getChessBoard();
+        int[] kingPos = MoveSafety.findKing(board, color);
+
+        if (kingPos == null) return; // Just in case
+
+        int kingRow = kingPos[0];
+        int kingCol = kingPos[1];
+
+        if (MoveSafety.isSquareSafe(kingRow, kingCol, 1 - color, board)) {
+            return;
+        }
+
+        Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setColor(new Color(255, 0, 0, 255));
+        // does not perfectly align with the tile, prob because of uneven scaling
+        g2d.fillRect(
+                chessManager.getSnappedPos(kingCol),
+                chessManager.getSnappedPos(kingRow),
+                chessManager.getTileSize(),
+                chessManager.getTileSize()
+        );
+        g2d.dispose();
+    }
+
     public static void drawCircle(Graphics g, ChessManager chessManager, int row, int col) {
         Piece piece = chessManager.getChessBoard()[row][col];
         Graphics2D g2d = (Graphics2D) g.create();
@@ -89,7 +116,6 @@ public class ChessPainter {
         Color gray = new Color(69, 69, 69, 150);
 
         if (piece == null || piece.getColor() == PiecesColors.EMPTY) {
-            // Smaller filled circle for empty tile
             int diameter = tileSize / 4;
             int x = centerX - diameter / 2;
             int y = centerY - diameter / 2;
@@ -97,10 +123,9 @@ public class ChessPainter {
             g2d.setColor(gray);
             g2d.fillOval(x, y, diameter, diameter);
         } else {
-            // Larger unfilled smooth circle for tile with a piece
-            int diameter = tileSize - 30;
+            int diameter = tileSize - 25;
             int x = centerX - diameter / 2;
-            int y = centerY - diameter / 2 + 10;
+            int y = centerY - diameter / 2 + 5;
 
             g2d.setColor(gray);
             g2d.setStroke(new BasicStroke(3));

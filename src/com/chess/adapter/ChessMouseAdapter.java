@@ -1,6 +1,7 @@
 package src.com.chess.adapter;
 
 import src.com.chess.constants.PiecesColors;
+import src.com.chess.game.GameState;
 import src.com.chess.move.MoveHandler;
 import src.com.chess.game.Piece;
 import src.com.chess.game.ChessManager;
@@ -16,19 +17,28 @@ public class ChessMouseAdapter extends MouseAdapter {
     CursorHandler cursorHandler;
     StateAdapter stateAdapter;
     MoveHandler moveHandler;
+    GameState gameState;
 
 
     public ChessMouseAdapter(
-            ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter, MoveHandler moveHandler
+            ChessManager chessManager,
+            CursorHandler cursorHandler,
+            StateAdapter stateAdapter,
+            MoveHandler moveHandler,
+            GameState gameState
     ) {
         this.chessManager = chessManager;
         this.cursorHandler = cursorHandler;
         this.stateAdapter = stateAdapter;
         this.moveHandler = moveHandler;
+        this.gameState = gameState;
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if(gameState.getState() != GameState.State.ONGOING)
+            return;
+
         super.mouseClicked(e);
 
         Point point = e.getPoint();
@@ -58,7 +68,6 @@ public class ChessMouseAdapter extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);
-
         cursorHandler.setCursor("normal");
 
         if(!stateAdapter.getDragging()) {

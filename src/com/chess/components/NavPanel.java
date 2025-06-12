@@ -1,7 +1,7 @@
 package src.com.chess.components;
 
 import src.com.chess.game.CursorHandler;
-import src.com.chess.game.FontHandler;
+import src.com.chess.utils.FontHandler;
 import src.com.chess.utils.SoundManager;
 
 import javax.swing.*;
@@ -22,24 +22,40 @@ public class NavPanel extends JPanel {
     }
 
     public NavPanel(JPanel mainPanel, CardLayout cardLayout, CursorHandler cursorHandler, FontHandler fontHandler){
-//        this.setBackground(Color.cyan);
         this.mainPanel = mainPanel;
         this.cardLayout = cardLayout;
         this.cursorHandler = cursorHandler;
         this.fontHandler = fontHandler;
-        this.setLayout(new GridLayout(1,3));
-        this.setPreferredSize(new Dimension(0, 50));
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        this.setPreferredSize(new Dimension(0, 100));
 
         backBtn = createButton("Quit", () -> {
             SoundManager.play("capture");
             cardLayout.show(mainPanel, "MENU");
         });
-        undoBtn = createButton("Undo", () -> SoundManager.play("move-self"));
-        redoBtn = createButton("Redo", () -> SoundManager.play("move-self"));
+        undoBtn = createButton("Undo", () -> {});
+        redoBtn = createButton("Redo", () -> {});
 
-        //  this.add(undoBtn);
-        //  this.add(redoBtn);
-        this.add(backBtn);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
+        this.add(undoBtn, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.5;
+        this.add(redoBtn, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2; // Span across both columns
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        this.add(backBtn, gbc);
+
     }
 
     private JButton createButton(String text, Action callback) {

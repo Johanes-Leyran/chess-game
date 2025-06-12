@@ -1,7 +1,7 @@
 package src.com.chess.components;
 
 import src.com.chess.game.CursorHandler;
-import src.com.chess.game.FontHandler;
+import src.com.chess.utils.FontHandler;
 import src.com.chess.utils.SoundManager;
 
 import javax.swing.*;

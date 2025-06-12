@@ -1,6 +1,4 @@
-package src.com.chess.game;
-
-import src.com.chess.utils.ResourceHandler;
+package src.com.chess.utils;
 
 import java.awt.*;
 import java.io.IOException;

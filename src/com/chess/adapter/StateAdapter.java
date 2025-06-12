@@ -20,23 +20,13 @@ public class StateAdapter {
         this.colorTurn = PiecesColors.WHITE; // white moves first
     }
 
-    public void toggleDragging() {
-        this.dragging = !dragging;
-    }
+    public void toggleDragging() { this.dragging = !dragging; }
 
-    public boolean getDragging() {
-        return this.dragging;
-    }
+    public boolean getDragging() { return this.dragging; }
 
-    public Point getInitialPoint() {
-        return initialPoint;
-    }
+    public Point getInitialPoint() { return initialPoint; }
 
-    public Piece getSelected() {
-        return selected;
-    }
+    public Piece getSelected() { return selected; }
 
-    public void setSelected(Piece selected) {
-        this.selected = selected;
-    }
+    public void setSelected(Piece selected) { this.selected = selected; }
 }
