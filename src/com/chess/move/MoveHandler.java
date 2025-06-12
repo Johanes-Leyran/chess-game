@@ -33,6 +33,8 @@ public class MoveHandler {
 
     public ArrayList<Move> getMoveHistory() { return moveHistory; }
 
+    public void resetMoveHistory() { moveHistory.clear(); }
+
     public void revertMove(Move move) {} // will not implement this, not enough time
 
     public void swap(Move move) {
@@ -163,6 +165,7 @@ public class MoveHandler {
         }
 
         moveHistory.add(move);
+        gameState.setColorTurn(gameState.getColorTurn() == PiecesColors.WHITE ? PiecesColors.BLACK : PiecesColors.WHITE);
         gameState.checkState(moveHistory, chessManager);
         return true;
     }
