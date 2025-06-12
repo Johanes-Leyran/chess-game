@@ -1,5 +1,6 @@
 package src.com.chess.adapter;
 
+import src.com.chess.constants.PiecesColors;
 import src.com.chess.game.Piece;
 import src.com.chess.game.ChessManager;
 import src.com.chess.game.CursorHandler;
@@ -27,7 +28,7 @@ public class ChessMotionAdapter extends MouseMotionAdapter {
     public void mouseMoved(MouseEvent e) {
         Piece piece = chessManager.checkBounds(e.getPoint());
 
-        if (piece != null && !hovering && piece.getType() != -1) {
+        if(piece != null && !hovering && piece.getType() != PiecesColors.EMPTY && piece.getColor() == this.stateAdapter.colorTurn) {
             cursorHandler.setCursor("toGrab");
             hovering = true;
         }

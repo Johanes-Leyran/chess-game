@@ -146,9 +146,7 @@ public class ChessManager {
             for(int col = 0;col < 8;col++) {
                 Piece currentPiece = getPiece(row, col);
 
-                double distance = piece.getMiddlePoint().distance(
-                        currentPiece.getRectMiddlePoint()
-                );
+                double distance = piece.getMiddlePoint().distance(currentPiece.getRectMiddlePoint());
 
                 if(distance < nearestDistance) {
                     nearestPiece = currentPiece;
@@ -164,6 +162,7 @@ public class ChessManager {
                     this.distanceThreshold,
                     nearestDistance
             ));
+
             return piece;
         }
 

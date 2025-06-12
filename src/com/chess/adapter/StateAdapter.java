@@ -1,5 +1,6 @@
 package src.com.chess.adapter;
 
+import src.com.chess.constants.PiecesColors;
 import src.com.chess.game.Piece;
 
 import java.awt.*;
@@ -10,11 +11,13 @@ public class StateAdapter {
     Point initialPoint;
     Piece selected;
     boolean dragging;
+    int colorTurn;
 
 
     public StateAdapter() {
         this.initialPoint = new Point(0, 0);
         this.dragging = false;
+        this.colorTurn = PiecesColors.WHITE; // white moves first
     }
 
     public void toggleDragging() {

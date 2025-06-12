@@ -32,7 +32,8 @@ public class MoveRules {
             // En passant
             if (target.getColor() == PiecesColors.EMPTY && history != null && !history.isEmpty()) {
                 Move lastMove = history.getLast();
-                return lastMove.piece.getType() == PiecesType.PAWN && // does not check if the pawn is the opponent's
+                return lastMove.piece.getType() == PiecesType.PAWN &&
+                        lastMove.piece.getColor() != move.piece.getColor() &&
                         Math.abs(lastMove.new_row - lastMove.prev_row) == 2 &&
                         lastMove.new_row == move.prev_row &&
                         lastMove.new_col == move.new_col;
@@ -74,6 +75,7 @@ public class MoveRules {
         if (dr == 0 && (dc == 2 || move.new_col == 2 || move.new_col == 6)) {
             int row = move.prev_row;
             int color = move.piece.getColor();
+            boolean isValidCastle = false;
 
             // Cannot castle if king already moved
             if (move.piece.isMoved()) return false;
@@ -83,12 +85,17 @@ public class MoveRules {
 
             // Kingside castle
             if (move.new_col == 6) {
-                return validateCastle(board, 7, new int[]{5, 6}, new int[]{4, 5, 6}, row, color);
+                isValidCastle = validateCastle(board, 7, new int[]{5, 6}, new int[]{4, 5, 6}, row, color);
             }
 
             // Queenside castle
             if (move.new_col == 2) {
-                return validateCastle(board, 0, new int[]{1, 2, 3}, new int[]{4, 3, 2}, row, color);
+                isValidCastle = validateCastle(board, 0, new int[]{1, 2, 3}, new int[]{4, 3, 2}, row, color);
+            }
+
+            if(isValidCastle) {
+                move.isCastle = true; // I know this a side effect but this will do
+                return true;
             }
         }
 

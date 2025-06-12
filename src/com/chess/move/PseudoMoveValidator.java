@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class PseudoMoveValidator {
 
     public static boolean validate(Move move, Piece[][] board, ArrayList<Move> history) {
-        return switch (move.piece.getType()) {
+        boolean isValid  = switch (move.piece.getType()) {
             case PiecesType.PAWN -> validatePawn(move, board, history);
             case PiecesType.KNIGHT -> validateKnight(move, board);
             case PiecesType.ROOK -> validateRook(move, board);
@@ -17,6 +17,8 @@ public class PseudoMoveValidator {
             case PiecesType.KING -> validateKing(move, board);
             default -> false;
         };
+
+        return isValid && move.piece.getColor() != move.captured.getColor();
     }
 
     public static boolean validatePawn(Move move, Piece[][] board, ArrayList<Move> history) {

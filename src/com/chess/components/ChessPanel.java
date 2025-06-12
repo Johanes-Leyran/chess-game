@@ -20,6 +20,7 @@ public class ChessPanel extends JPanel {
     int FPS;
     Timer udpateLoopTimer;
     ChessManager chessManager;
+    MoveHandler moveHandler;
 
 
     public ChessPanel(ComponentData componentData, CursorHandler cursorHandler){
@@ -48,8 +49,9 @@ public class ChessPanel extends JPanel {
         this.udpateLoopTimer.start();
         this.stateAdapter = new StateAdapter();
 
+        this.moveHandler = new MoveHandler(chessManager);
         this.addMouseListener(new ChessMouseAdapter(
-                this.chessManager, this.cursorHandler, stateAdapter, new MoveHandler(chessManager))
+                this.chessManager, this.cursorHandler, stateAdapter, moveHandler)
         );
         this.addMouseMotionListener(new ChessMotionAdapter(this.chessManager, this.cursorHandler, stateAdapter));
     }
@@ -62,10 +64,10 @@ public class ChessPanel extends JPanel {
         );
 
         if(Globals.getShowRect())
-            ChessPainter.drawRect(g, chessManager);
+            ChessPainter.drawAllRect(g, chessManager);
 
+        ChessPainter.drawValidMoves(g, stateAdapter.getSelected(), chessManager, moveHandler.getMoveHistory());
         ChessPainter.drawPieces(g, chessManager);
-        // draw dragged piece last so it will be on top of all sprites
         ChessPainter.drawSinglePiece(g, stateAdapter.getSelected());
     }
 }

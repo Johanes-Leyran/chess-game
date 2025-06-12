@@ -10,9 +10,7 @@ public class MoveValidator {
         if (!PseudoMoveValidator.validate(move, board, history)) return false;
 
         Piece[][] copy = deepCopyBoard(board);
-
         MoveSimulator.apply(move, copy);
-        MoveFlagger.markCheck(move, copy);
 
         return MoveSafety.isKingSafe(copy, move.piece.getColor());
     }
@@ -23,14 +21,17 @@ public class MoveValidator {
                 if (MoveSafety.hasLegalMove(board, history, color, row, col)) return true;
             }
         }
+
         return false;
     }
 
     public static Piece[][] deepCopyBoard(Piece[][] original) {
         Piece[][] copy = new Piece[8][8];
+
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++)
                 copy[row][col] = original[row][col] == null ? null : new Piece(original[row][col]);
+
         return copy;
     }
 }

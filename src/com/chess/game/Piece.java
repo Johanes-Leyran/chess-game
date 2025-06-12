@@ -88,6 +88,12 @@ public class Piece {
           return this.color;
      }
 
+     public String getStringColor() {
+          if(this.getColor() == 0) return "WHITE";
+          if(this.getColor() == 1) return "BLACK";
+          else return "EMPTY";
+     }
+
      public void setColor(int color) {
           this.color = color;
      }

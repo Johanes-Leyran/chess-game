@@ -7,6 +7,15 @@ import src.com.chess.utils.ResourceHandler;
 import javax.swing.*;
 import java.awt.*;
 
+// todo: made the move validation, implement it with the move handler
+// todo: check for endgame status, check, stalemate, surrender, and time out
+// todo: make a function that resets the status of the board
+// todo: at a timer
+// todo: (optional) add revert move
+// todo: add surrender button
+// todo: implement stock fish ai model for win and linux
+// todo: implement sliding piece animation for enemy ai and castling
+
 
 public class ChessFrame extends JFrame {
     public static final String TITLE = "Chess Game";

@@ -8,7 +8,6 @@ public class Move {
     public Piece piece, captured;
     public boolean isEnPassant = false;
     public boolean isCastle = false;
-    public boolean isCheck = false;
 
 
     public Move(

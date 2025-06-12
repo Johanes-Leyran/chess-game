@@ -34,9 +34,8 @@ public class ChessMouseAdapter extends MouseAdapter {
         Point point = e.getPoint();
         Piece piece = chessManager.checkBounds(point);
 
-        if(piece == null || piece.getColor() == PiecesColors.EMPTY) {
-            return;
-        }
+        if(piece == null || piece.getColor() == PiecesColors.EMPTY) return;
+        if(piece.getColor() != this.stateAdapter.colorTurn) return;
 
         cursorHandler.setCursor("grab");
         this.stateAdapter.getInitialPoint().setLocation(
@@ -76,8 +75,12 @@ public class ChessMouseAdapter extends MouseAdapter {
                 selected.getYPosition()
         ));
 
-        moveHandler.validateMove(selected, target);
         selected.setIsDragged(false);
+
+        if(moveHandler.validateMove(selected, target))
+            this.stateAdapter.colorTurn = (this.stateAdapter.colorTurn == PiecesColors.WHITE)
+                        ? PiecesColors.BLACK
+                        : PiecesColors.WHITE;
 
         selected.setPosition(
                 chessManager.getSnappedXPos(selected.getCol()),
@@ -90,5 +93,11 @@ public class ChessMouseAdapter extends MouseAdapter {
 
         stateAdapter.toggleDragging();
         stateAdapter.setSelected(null);
+
+        Log.INFO(String.format(
+                "%s %s Turn",
+                this.getClass().getSimpleName(),
+                this.stateAdapter.colorTurn == PiecesColors.WHITE ? "White" : "Black"
+        ));
     }
 }

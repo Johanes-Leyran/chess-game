@@ -1,8 +1,12 @@
 package src.com.chess.game;
 
 import src.com.chess.constants.PiecesColors;
+import src.com.chess.move.Move;
+import src.com.chess.move.MoveValidator;
+import src.com.chess.move.PseudoMoveValidator;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ChessPainter {
 
@@ -36,7 +40,7 @@ public class ChessPainter {
     // note to self: this does not change the actual position in chess board only animation and its x y pos
     public static void slidePiece(Graphics g, Piece piece, int target_col, int target_row, ChessManager chessManager) {
         Point startingPos = piece.getLocation();
-        Point targetPos = new Point(chessManager.getSnappedXPos(target_col), chessManager.getSnappedYPos(target_row));
+        Point targetPos = new Point(chessManager.getSnappedPos(target_col), chessManager.getSnappedPos(target_row));
         piece.setIsDragged(true);
 
         int step = 5;
@@ -60,19 +64,67 @@ public class ChessPainter {
         piece.setPosition(targetPos);
         piece.setIsDragged(false);
     }
-    // only for debug
-    public static void drawRect(Graphics g, ChessManager chessManager) {
-        if(Globals.getLevel() < 2) {
-            return;
-        }
+    public static void drawRect(Graphics g, ChessManager chessManager, int row, int col) {
+        Rectangle rect = chessManager.getChessBoard()[row][col].getBounds();
+        g.drawRect(rect.x, rect.y, rect.width, rect.height);
+    }
 
+    // only for debugging
+    public static void drawAllRect(Graphics g, ChessManager chessManager) {
         for(int row = 0;row < 8;row++) {
             for(int col = 0;col < 8;col++) {
-                Rectangle rect = chessManager.getChessBoard()[row][col].getBounds();
-                g.drawRect(rect.x, rect.y, rect.width, rect.height);
+                drawRect(g, chessManager, row, col);
             }
         }
     }
 
+    public static void drawCircle(Graphics g, ChessManager chessManager, int row, int col) {
+        Piece piece = chessManager.getChessBoard()[row][col];
+        Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        int tileSize = chessManager.getTileSize();
+        int centerX = chessManager.getSnappedPos(col) + tileSize / 2 + 2;
+        int centerY = chessManager.getSnappedPos(row) + tileSize / 2 + 4;
+        Color gray = new Color(69, 69, 69, 150);
+
+        if (piece == null || piece.getColor() == PiecesColors.EMPTY) {
+            // Smaller filled circle for empty tile
+            int diameter = tileSize / 4;
+            int x = centerX - diameter / 2;
+            int y = centerY - diameter / 2;
+
+            g2d.setColor(gray);
+            g2d.fillOval(x, y, diameter, diameter);
+        } else {
+            // Larger unfilled smooth circle for tile with a piece
+            int diameter = tileSize - 30;
+            int x = centerX - diameter / 2;
+            int y = centerY - diameter / 2 + 10;
+
+            g2d.setColor(gray);
+            g2d.setStroke(new BasicStroke(3));
+            g2d.drawOval(x, y, diameter, diameter);
+        }
+
+        g2d.dispose();
+    }
+
+    // draw all valid moves
+    public static void drawValidMoves(Graphics g, Piece piece, ChessManager chessManager, ArrayList<Move> history) {
+        // the piece came from state adapter, and it can be null and thus
+        if(piece == null) return;
+
+        for(int row = 0;row < 8;row++) {
+            for(int col = 0;col < 8;col++) {
+                Move pseudoMove = new Move(
+                        piece.getCol(), piece.getRow(), col, row, piece, chessManager.getChessBoard()[row][col]
+                );
+
+                if(!MoveValidator.isValid(pseudoMove, chessManager.getChessBoard(), history)) continue;
+
+                drawCircle(g, chessManager, row, col);
+            }
+        }
+    }
 }
