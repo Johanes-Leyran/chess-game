@@ -1,5 +1,6 @@
 package src.com.chess.move;
 
+import src.com.chess.constants.PiecesColors;
 import src.com.chess.game.Piece;
 
 import java.util.ArrayList;
@@ -43,5 +44,24 @@ public class MoveSafety {
         }
 
         return false;
+    }
+
+    public static boolean isLinearPathClear(Move move, Piece[][] board) {
+        int dr = move.new_row - move.prev_row;
+        int dc = move.new_col - move.prev_col;
+
+        int stepRow = Integer.signum(dr);
+        int stepCol = Integer.signum(dc);
+
+        int row = move.prev_row + stepRow;
+        int col = move.prev_col + stepCol;
+
+        while (row != move.new_row || col != move.new_col) {
+            if (board[row][col].getColor() != PiecesColors.EMPTY) return false;
+            row += stepRow;
+            col += stepCol;
+        }
+
+        return true;
     }
 }

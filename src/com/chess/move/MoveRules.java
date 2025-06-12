@@ -1,10 +1,13 @@
 package src.com.chess.move;
 
+import src.com.chess.constants.PiecesColors;
 import src.com.chess.constants.PiecesType;
 import src.com.chess.game.Piece;
 
 import java.util.ArrayList;
 
+
+// Be warned! Dirty code incoming
 public class MoveRules {
 
     public static boolean validatePawnMove(Move move, Piece[][] board, ArrayList<Move> history) {
@@ -15,21 +18,21 @@ public class MoveRules {
 
         // Normal move
         if (colDiff == 0) {
-            if (rowDiff == dir && board[move.new_row][move.new_col] == null) return true;
+            if (rowDiff == dir && board[move.new_row][move.new_col].getColor() == PiecesColors.EMPTY) return true;
             if (move.prev_row == startRow && rowDiff == 2 * dir &&
-                    board[move.new_row][move.new_col] == null &&
-                    board[move.prev_row + dir][move.prev_col] == null) return true;
+                    board[move.new_row][move.new_col].getColor() == PiecesColors.EMPTY &&
+                    board[move.prev_row + dir][move.prev_col].getColor() == PiecesColors.EMPTY) return true;
         }
 
         // Capture
         if (colDiff == 1 && rowDiff == dir) {
             Piece target = board[move.new_row][move.new_col];
-            if (target != null && target.getColor() != move.piece.getColor()) return true;
+            if (target.getColor() != PiecesColors.EMPTY && target.getColor() != move.piece.getColor()) return true;
 
             // En passant
-            if (target == null && history != null && !history.isEmpty()) {
+            if (target.getColor() == PiecesColors.EMPTY && history != null && !history.isEmpty()) {
                 Move lastMove = history.getLast();
-                return lastMove.piece.getType() == PiecesType.PAWN &&
+                return lastMove.piece.getType() == PiecesType.PAWN && // does not check if the pawn is the opponent's
                         Math.abs(lastMove.new_row - lastMove.prev_row) == 2 &&
                         lastMove.new_row == move.prev_row &&
                         lastMove.new_col == move.new_col;
@@ -42,51 +45,22 @@ public class MoveRules {
     public static boolean validateKnightMove(Move move, Piece[][] board) {
         int dr = Math.abs(move.new_row - move.prev_row);
         int dc = Math.abs(move.new_col - move.prev_col);
+
         return (dr == 2 && dc == 1) || (dr == 1 && dc == 2);
     }
 
-    public static boolean validateRookMove(Move move, Piece[][] board) {
+    public static boolean validateSlidingPiece(Move move, Piece[][] board) {
         int dr = move.new_row - move.prev_row;
         int dc = move.new_col - move.prev_col;
 
-        if (dr != 0 && dc != 0) return false;
+        boolean validRook = dr == 0 || dc == 0;
+        boolean validBishop = Math.abs(dr) == Math.abs(dc);
 
-        int stepRow = Integer.signum(dr);
-        int stepCol = Integer.signum(dc);
+        if(move.piece.getType() == PiecesType.ROOK && !validRook) return false;
+        if(move.piece.getType() == PiecesType.BISHOP && !validBishop) return false;
+        if(move.piece.getType() == PiecesType.QUEEN && !validRook && !validBishop) return false;
 
-        int row = move.prev_row + stepRow;
-        int col = move.prev_col + stepCol;
-        while (row != move.new_row || col != move.new_col) {
-            if (board[row][col] != null) return false;
-            row += stepRow;
-            col += stepCol;
-        }
-
-        return true;
-    }
-
-    public static boolean validateBishopMove(Move move, Piece[][] board) {
-        int dr = move.new_row - move.prev_row;
-        int dc = move.new_col - move.prev_col;
-
-        if (Math.abs(dr) != Math.abs(dc)) return false;
-
-        int stepRow = Integer.signum(dr);
-        int stepCol = Integer.signum(dc);
-
-        int row = move.prev_row + stepRow;
-        int col = move.prev_col + stepCol;
-        while (row != move.new_row && col != move.new_col) {
-            if (board[row][col] != null) return false;
-            row += stepRow;
-            col += stepCol;
-        }
-
-        return true;
-    }
-
-    public static boolean validateQueenMove(Move move, Piece[][] board) {
-        return validateRookMove(move, board) || validateBishopMove(move, board);
+        return MoveSafety.isLinearPathClear(move, board);
     }
 
     public static boolean validateKingMove(Move move, Piece[][] board) {
@@ -130,11 +104,14 @@ public class MoveRules {
             int color
     ) {
         Piece rook = board[row][rook_col];
-        if (rook == null || rook.getType() != PiecesType.ROOK || rook.getColor() != color || rook.isMoved())
+        if (rook.getColor() == PiecesColors.EMPTY ||
+                rook.getType() != PiecesType.ROOK ||
+                rook.getColor() != color ||
+                rook.isMoved())
             return false;
 
         for (int col : clearCols)
-            if (board[row][col] != null) return false;
+            if (board[row][col].getColor() != PiecesColors.EMPTY) return false;
 
         for (int col : safeCols)
             if (!MoveSafety.isSquareSafe(row, col, 1 - color, board)) return false;

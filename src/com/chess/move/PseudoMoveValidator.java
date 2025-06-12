@@ -28,15 +28,15 @@ public class PseudoMoveValidator {
     }
 
     public static boolean validateRook(Move move, Piece[][] board) {
-        return MoveRules.validateRookMove(move, board);
+        return MoveRules.validateSlidingPiece(move, board);
     }
 
     public static boolean validateBishop(Move move, Piece[][] board) {
-        return MoveRules.validateBishopMove(move, board);
+        return MoveRules.validateSlidingPiece(move, board);
     }
 
     public static boolean validateQueen(Move move, Piece[][] board) {
-        return MoveRules.validateQueenMove(move, board);
+        return MoveRules.validateSlidingPiece(move, board);
     }
 
     public static boolean validateKing(Move move, Piece[][] board) {

@@ -1,22 +1,24 @@
 package src.com.chess.move;
 
+import src.com.chess.constants.PiecesColors;
 import src.com.chess.constants.PiecesType;
 import src.com.chess.game.Piece;
 
 public class MoveFlagger {
 
     public static void markCheck(Move move, Piece[][] board) {
+        int targetColor = move.captured.getColor();
+
         // make sure to disregard pieces who have empty color
-        int enemyColor = 1 - move.piece.getColor();
-        int[] kingPos = findKing(board, enemyColor);
+        if(targetColor == PiecesColors.EMPTY) {
+            return;
+        }
+
+        int[] kingPos = findKing(board, targetColor);
         if (kingPos == null) return;
 
         if (!MoveSafety.isSquareSafe(kingPos[0], kingPos[1], move.piece.getColor(), board)) {
             move.isCheck = true;
-
-            // if it is a check, check if the player has any valid moves to counter it
-            // otherwise that player lost
-
         }
     }
 

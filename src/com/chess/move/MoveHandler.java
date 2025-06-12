@@ -27,9 +27,7 @@ public class MoveHandler {
         pieceName.put(5, "KING");
     }
 
-    public int[][] showAvailableMoves(int type, int col, int row) {
-        return null;
-    }
+    public int[][] showAvailableMoves(int type, int col, int row) { return null; }
 
     public void revertMove(Move move) {}
 

@@ -10,8 +10,8 @@ public class MoveValidator {
         if (!PseudoMoveValidator.validate(move, board, history)) return false;
 
         Piece[][] copy = deepCopyBoard(board);
-        MoveSimulator.apply(move, copy);
 
+        MoveSimulator.apply(move, copy);
         MoveFlagger.markCheck(move, copy);
 
         return MoveSafety.isKingSafe(copy, move.piece.getColor());

@@ -62,10 +62,10 @@ public class ChessPanel extends JPanel {
         );
 
         if(Globals.getShowRect())
-            chessManager.drawRect(g);
+            ChessPainter.drawRect(g, chessManager);
 
-        chessManager.drawPieces(g);
+        ChessPainter.drawPieces(g, chessManager);
         // draw dragged piece last so it will be on top of all sprites
-        chessManager.drawSinglePiece(g, stateAdapter.getSelected());
+        ChessPainter.drawSinglePiece(g, stateAdapter.getSelected());
     }
 }
