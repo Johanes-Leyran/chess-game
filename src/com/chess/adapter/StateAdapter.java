@@ -26,6 +26,8 @@ public class StateAdapter {
 
     public Point getInitialPoint() { return initialPoint; }
 
+    public void setColorTurn(int color) { this.colorTurn = color; }
+
     public Piece getSelected() { return selected; }
 
     public void setSelected(Piece selected) { this.selected = selected; }

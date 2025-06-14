@@ -66,19 +66,16 @@ public class CreditsPanel extends JPanel {
                 new EmptyBorder(0, 0, 30, 0),
                 20
         ));
-
         contentPanel.add(this.createLabel(
                 "SOUNDS",
                 new EmptyBorder(35, 0, 30, 0),
                 26
         ));
-
         contentPanel.add(this.createLabel(
                 "https://www.chess.com",
                 new EmptyBorder(0, 0, 30, 0),
                 20
         ));
-
         contentPanel.add(this.createLabel(
                 "Ver 1.0.0",
                 new EmptyBorder(100, 0, 30, 0),

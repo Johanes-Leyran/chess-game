@@ -32,7 +32,6 @@ public class MenuPanel extends JPanel {
         this.setLayout(new BorderLayout());
         this.setBackground(new Color(45, 45, 45));
 
-        // initialize sounds
         SoundManager.loadSounds();
 
         titleLabel = createLabel(
@@ -48,11 +47,11 @@ public class MenuPanel extends JPanel {
         buttonPanel.setBorder(new EmptyBorder(70, 300, 200, 300));
 
         playVSHumanBtn = this.createButton("Player vs Player", "GAME");
-        playVSAIBtn = this.createButton("Player vs AI", "GAME");
+        // playVSAIBtn = this.createButton("Player vs AI", "GAME");
         creditsBtn = this.createButton("Credits", "CREDITS");
 
         buttonPanel.add(playVSHumanBtn);
-        buttonPanel.add(playVSAIBtn);
+        // buttonPanel.add(playVSAIBtn);
         buttonPanel.add(creditsBtn);
 
         this.add(buttonPanel, BorderLayout.CENTER);
@@ -99,7 +98,7 @@ public class MenuPanel extends JPanel {
             Timer cursorResetTimer = new Timer(
                     CURSOR_RESET_DELAY_MS, e -> this.cursorHandler.setCursor("normal")
             );
-            cursorResetTimer.setRepeats(false); // Ensure it only runs once
+            cursorResetTimer.setRepeats(false); // to ensure it only runs once
             cursorResetTimer.start();
         });
 

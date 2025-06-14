@@ -1,6 +1,10 @@
 package src.com.chess.components;
 
+import src.com.chess.adapter.StateAdapter;
+import src.com.chess.constants.PiecesColors;
+import src.com.chess.game.ChessManager;
 import src.com.chess.game.CursorHandler;
+import src.com.chess.game.GameState;
 import src.com.chess.utils.FontHandler;
 import src.com.chess.utils.SoundManager;
 
@@ -16,42 +20,55 @@ public class NavPanel extends JPanel {
     JButton backBtn;
     JButton undoBtn;
     JButton redoBtn;
+    StateAdapter stateAdapter;
 
     public interface Action {
         void call();
     }
 
-    public NavPanel(JPanel mainPanel, CardLayout cardLayout, CursorHandler cursorHandler, FontHandler fontHandler){
+    public NavPanel(
+            JPanel mainPanel,
+            CardLayout cardLayout,
+            CursorHandler cursorHandler,
+            FontHandler fontHandler,
+            GameState gameState,
+            ChessManager chessManager
+    ){
         this.mainPanel = mainPanel;
         this.cardLayout = cardLayout;
         this.cursorHandler = cursorHandler;
         this.fontHandler = fontHandler;
         this.setLayout(new GridBagLayout());
+        this.setBackground(new Color(80, 80, 80));
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        this.setPreferredSize(new Dimension(0, 100));
 
         backBtn = createButton("Quit", () -> {
             SoundManager.play("capture");
             cardLayout.show(mainPanel, "MENU");
+
+            // reset
+            gameState.resetGame();
+            chessManager.setUpPieces();
         });
         undoBtn = createButton("Undo", () -> {});
         redoBtn = createButton("Redo", () -> {});
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.5;
-        gbc.weighty = 0.5;
-        this.add(undoBtn, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.weightx = 0.5;
-        this.add(redoBtn, gbc);
+//        gbc.gridx = 0;
+//        gbc.gridy = 0;
+//        gbc.weightx = 0.5;
+//        gbc.weighty = 0.5;
+//        this.add(undoBtn, gbc);
+//
+//        gbc.gridx = 1;
+//        gbc.gridy = 0;
+//        gbc.weightx = 0.5;
+//        this.add(redoBtn, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 2; // Span across both columns
+        gbc.gridwidth = 2;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
         this.add(backBtn, gbc);

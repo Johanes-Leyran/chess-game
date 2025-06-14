@@ -115,9 +115,7 @@ public class ChessManager {
 
     public Piece getPiece(int row, int col) { return chessBoard[row][col]; }
 
-    public void setPiece(int row, int col, Piece piece) {
-        chessBoard[row][col] = piece;
-    }
+    public void setPiece(int row, int col, Piece piece) { chessBoard[row][col] = piece; }
 
     public void updatePiece(int new_row, int new_col, Piece piece) {
         piece.setBounds(setUpRect(getSnappedXPos(new_col), getSnappedYPos(new_row), piece.getSprite()));

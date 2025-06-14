@@ -1,7 +1,10 @@
 package src.com.chess.components;
 
+import src.com.chess.adapter.StateAdapter;
+import src.com.chess.game.ChessManager;
 import src.com.chess.game.ComponentData;
 import src.com.chess.game.CursorHandler;
+import src.com.chess.move.MoveHandler;
 import src.com.chess.utils.FontHandler;
 import src.com.chess.game.GameState;
 
@@ -11,10 +14,9 @@ import java.awt.*;
 
 public class GamePanel extends JPanel {
     JPanel mainPanel;
-    JPanel chessPanel;
     ComponentData componentData;
     JFrame frame;
-    GameState gameState;
+    StateAdapter stateAdapter;
 
 
     public GamePanel(
@@ -26,7 +28,6 @@ public class GamePanel extends JPanel {
     ){
         this.mainPanel = mainPanel;
         this.frame = frame;
-        this.setBackground(Color.black);
         this.setLayout(new BorderLayout());
         this.componentData = new ComponentData(
                 142,
@@ -37,9 +38,37 @@ public class GamePanel extends JPanel {
                 2.7,
                 this.frame
         );
-        this.gameState = new GameState();
-        this.chessPanel = new ChessPanel(this.componentData, cursorHandler, this.gameState);
-        this.add(chessPanel, BorderLayout.WEST);
-        this.add(new InfoPanel(mainPanel, cardLayout, frame, cursorHandler, fontHandler, this.gameState), BorderLayout.CENTER);
+        this.stateAdapter = new StateAdapter();
+
+        ChessManager chessManager= new ChessManager(
+                this,
+                this.componentData.chessBoardOffset,
+                this.componentData.chessBoardScale,
+                this.componentData.chessBoardSize
+        );
+
+        MoveHandler moveHandler = new MoveHandler(chessManager);
+        GameState gameState = new GameState(cursorHandler, mainPanel, fontHandler, chessManager, cardLayout, moveHandler);
+        moveHandler.setGameState(gameState); // Circular import yay
+
+        this.add(new ChessPanel(
+                this.componentData,
+                cursorHandler,
+                gameState,
+                this.stateAdapter,
+                chessManager,
+                moveHandler
+                ), BorderLayout.WEST
+        );
+        this.add(new InfoPanel(
+                mainPanel,
+                cardLayout,
+                frame,
+                cursorHandler,
+                fontHandler,
+                gameState,
+                chessManager
+                ), BorderLayout.CENTER
+        );
     }
 }

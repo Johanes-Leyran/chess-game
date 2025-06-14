@@ -38,6 +38,7 @@ public class ChessMouseAdapter extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
         if(gameState.getState() != GameState.State.ONGOING)
             return;
+        if(gameState.getReset()) stateAdapter.setColorTurn(PiecesColors.WHITE);
 
         super.mouseClicked(e);
 
@@ -46,6 +47,10 @@ public class ChessMouseAdapter extends MouseAdapter {
 
         if(piece == null || piece.getColor() == PiecesColors.EMPTY) return;
         if(piece.getColor() != this.stateAdapter.colorTurn) return;
+        if(piece.getColor() == gameState.getColorTurn()) {
+            gameState.startGame(); // if the piece is touch start the timer
+            gameState.setReset(false);
+        }
 
         cursorHandler.setCursor("grab");
         this.stateAdapter.getInitialPoint().setLocation(

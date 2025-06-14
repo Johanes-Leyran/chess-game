@@ -6,6 +6,7 @@ import src.com.chess.adapter.StateAdapter;
 import src.com.chess.constants.PiecesColors;
 import src.com.chess.game.*;
 import src.com.chess.move.MoveHandler;
+import src.com.chess.utils.FontHandler;
 import src.com.chess.utils.SpriteSheetHandler;
 
 import javax.swing.*;
@@ -24,15 +25,18 @@ public class ChessPanel extends JPanel {
     MoveHandler moveHandler;
 
 
-    public ChessPanel(ComponentData componentData, CursorHandler cursorHandler, GameState gameState){
+    public ChessPanel(
+            ComponentData componentData,
+            CursorHandler cursorHandler,
+            GameState gameState,
+            StateAdapter stateAdapter,
+            ChessManager chessManager,
+            MoveHandler moveHandler
+    ){
         this.componentData = componentData;
         this.FPS = Globals.getFps();
-        this.chessManager = new ChessManager(
-                this,
-                this.componentData.chessBoardOffset,
-                this.componentData.chessBoardScale,
-                this.componentData.chessBoardSize
-        );
+        this.stateAdapter = stateAdapter;
+        this.chessManager = chessManager;
         this.chessManager.setUpPieces();
         this.chessBoardImg = new SpriteSheetHandler(
                 "board.png",
@@ -45,12 +49,10 @@ public class ChessPanel extends JPanel {
                 chessBoardImg.getWidth(),
                 chessBoardImg.getHeight()
         ));
-
         this.udpateLoopTimer = new Timer(1000 / this.FPS, _ -> repaint());
         this.udpateLoopTimer.start();
-        this.stateAdapter = new StateAdapter();
 
-        this.moveHandler = new MoveHandler(chessManager, gameState);
+        this.moveHandler = moveHandler;
         this.addMouseListener(new ChessMouseAdapter(
                 this.chessManager, this.cursorHandler, stateAdapter, moveHandler, gameState
         ));

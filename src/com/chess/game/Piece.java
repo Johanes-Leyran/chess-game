@@ -44,18 +44,18 @@ public class Piece {
           this.isMoved = other.isMoved;
      }
 
-     public BufferedImage getSprite() {
-          return sprite;
-     }
+     public BufferedImage getSprite() { return sprite; }
 
-     public boolean isDragged() {
-          return this.isDragged;
-     }
+     public boolean isDragged() { return this.isDragged; }
 
      public void setSnappedPosition(int row, int col) {
           this.row = row;
           this.col = col;
      }
+
+     public void setSprite(BufferedImage sprite) { this.sprite = sprite; }
+
+     public void setType(int type) { this.type = type; }
 
      public Point getRectMiddlePoint() {
           Point point = this.rect.getLocation();
@@ -84,9 +84,7 @@ public class Piece {
           return point;
      }
 
-     public int getColor() {
-          return this.color;
-     }
+     public int getColor() { return this.color; }
 
      public String getStringColor() {
           if(this.getColor() == 0) return "WHITE";
@@ -94,13 +92,9 @@ public class Piece {
           else return "EMPTY";
      }
 
-     public void setColor(int color) {
-          this.color = color;
-     }
+     public void setColor(int color) { this.color = color; }
 
-     public int getType() {
-          return this.type;
-     }
+     public int getType() { return this.type; }
 
      public void setPosition(Point point) {
           this.x = point.x;

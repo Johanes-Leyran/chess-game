@@ -1,70 +1,97 @@
 package src.com.chess.components;
 
+import src.com.chess.game.GameState;
 import src.com.chess.utils.FontHandler;
+import src.com.chess.utils.Log;
+import src.com.chess.utils.PopUpBuilder;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 
 public class TimerPanel extends JPanel {
-    private long startTime;
-    private long elapsedMillis;
-    private boolean running;
+    long startTime;
+    long elapsedTime;
+    long durationLimit;
+    boolean running;
+    boolean hasPop;
+    int color;
 
-    private final DecimalFormat secondsFormat = new DecimalFormat("0.00");
-    private final FontHandler fontHandler;
+    GameState gameState;
+    final DecimalFormat secondsFormat = new DecimalFormat("0.00");
+    final FontHandler fontHandler;
 
-    public TimerPanel(FontHandler fontHandler) {
+    public TimerPanel(FontHandler fontHandler, GameState gameState, long durationLimit, int color) {
         this.fontHandler = fontHandler;
+        this.gameState = gameState;
+        this.durationLimit = durationLimit;
+        this.color = color;
+        this.hasPop = false;
 
-        this.setPreferredSize(new Dimension(100, 40));
-        this.setBackground(new Color(30, 30, 30));
+        setPreferredSize(new Dimension(100, 40));
+        setBackground(new Color(30, 30, 30));
 
-        Timer timer = new Timer(50, e -> {
-            if (running) {
-                elapsedMillis = System.currentTimeMillis() - startTime;
+        Timer timer = new Timer(50, _ -> {
+            boolean isTurn = color == gameState.getColorTurn();
+            boolean isGameOn = gameState.getState() == GameState.State.ONGOING;
+
+            if(gameState.getReset()) {
+                this.reset();
+                this.start();
+            };
+
+            if(isTurn && running && gameState.getStartGame() && isGameOn) {
+                elapsedTime = System.currentTimeMillis() - startTime;
                 repaint();
+
+                if (elapsedTime <= durationLimit) return;
+
+                elapsedTime = durationLimit;
+                running = false;
+                gameState.stateTimeOver(color);
+
+                if(hasPop) return;
+
+                hasPop = true;
+                gameState.popUpState();
+
+            } else {
+                startTime = System.currentTimeMillis() - elapsedTime;
             }
         });
         timer.start();
     }
 
-    public void start() {
-        startTime = System.currentTimeMillis() - elapsedMillis;
-        running = true;
-    }
-
-    public void stop() {
-        running = false;
-    }
-
     public void reset() {
         running = false;
-        elapsedMillis = 0;
+        elapsedTime = 0;
         repaint();
     }
 
-    public long getElapsedMillis() {
-        return elapsedMillis;
+    public void start() {
+        startTime = System.currentTimeMillis() - elapsedTime;
+        running = true;
+        hasPop = false;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        long millis = elapsedMillis;
-        Graphics2D g2 = (Graphics2D) g.create();
+        long remaining = durationLimit - elapsedTime;
+        if (remaining < 0) remaining = 0;
 
+        Graphics2D g2 = (Graphics2D) g.create();
         g2.setColor(Color.WHITE);
-        g2.setFont(fontHandler.getFont(22));
+        g2.setFont(fontHandler.getFont(30));
 
         String timeText;
-        if (millis >= 10_000) {
-            long seconds = (millis / 1000) % 60;
-            long minutes = millis / 60000;
-            timeText = String.format("%02d:%02d", minutes, seconds);
+        if (remaining >= 10_000) {
+            long seconds = (remaining / 1000) % 60;
+            long minutes = remaining / 60000;
+            timeText = String.format("%02d : %02d", minutes, seconds);
         } else {
-            double seconds = millis / 1000.0;
+            double seconds = remaining / 1000.0;
             timeText = secondsFormat.format(seconds);
         }
 

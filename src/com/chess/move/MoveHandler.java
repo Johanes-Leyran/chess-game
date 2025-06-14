@@ -2,25 +2,40 @@ package src.com.chess.move;
 
 
 import src.com.chess.constants.PiecesColors;
+import src.com.chess.constants.PiecesType;
 import src.com.chess.game.ChessManager;
 import src.com.chess.game.GameState;
 import src.com.chess.game.Piece;
 import src.com.chess.utils.Log;
 import src.com.chess.utils.SoundManager;
+import src.com.chess.utils.SpriteSheetHandler;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class MoveHandler {
     static ArrayList<Move> moveHistory = new ArrayList<>(); // could use a linked list instead
     static HashMap<Integer, String> pieceName = new HashMap<>();
 
+    BufferedImage whiteQueen;
+    BufferedImage blackQueen;
     ChessManager chessManager;
     GameState gameState;
 
-    public MoveHandler(ChessManager chessManager, GameState gameState) {
+    public MoveHandler(ChessManager chessManager) {
         this.chessManager = chessManager;
-        this.gameState = gameState;
+
+        SpriteSheetHandler whitePieces = new SpriteSheetHandler(
+                "white_pieces.png", 16, 32, 3
+        );
+        SpriteSheetHandler blackPieces = new SpriteSheetHandler(
+                "black_pieces.png", 16, 32, 3
+        );
+
+        this.whiteQueen = whitePieces.getSprite(0, PiecesType.QUEEN);
+        this.blackQueen = blackPieces.getSprite(0, PiecesType.QUEEN);
 
         pieceName.put(-1, "EMPTY");
         pieceName.put(0, "PAWN");
@@ -31,11 +46,16 @@ public class MoveHandler {
         pieceName.put(5, "KING");
     }
 
+    // to avoid circular import
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
     public ArrayList<Move> getMoveHistory() { return moveHistory; }
 
     public void resetMoveHistory() { moveHistory.clear(); }
 
-    public void revertMove(Move move) {} // will not implement this, not enough time
+    public void revertMove(Move move) {} // will not implement this, too lazy
 
     public void swap(Move move) {
         chessManager.updatePiece(move.new_row, move.new_col, move.piece);
@@ -47,12 +67,15 @@ public class MoveHandler {
                 "%s Move Type: Capture",
                 this.getClass().getSimpleName()
         ));
-        // todo: more capture logics
-        move.captured.setColor(-1);
+
+        // Making the color of the captured piece empty makes an illusion that it is removed from the game
+        move.captured.setColor(PiecesColors.EMPTY);
+        gameState.updateCaptured(move.captured);
         swap(move);
         SoundManager.play("capture");
     }
 
+    // For the record I don't know if this works
     public void enPassant(Move move, Piece[][] board) {
         Log.INFO(String.format(
                 "%s Move Type: En Passant",
@@ -63,10 +86,11 @@ public class MoveHandler {
         int capturedRow = move.new_row + direction;
         int capturedCol = move.new_col;
 
-        move.captured = board[capturedRow][capturedCol];
-        board[capturedRow][capturedCol].setColor(PiecesColors.EMPTY);
+        Piece captured = board[capturedRow][capturedCol];
+        captured.setColor(PiecesColors.EMPTY);
 
-        swap(move); // Move capturing pawn
+        swap(move);
+        gameState.updateCaptured(captured);
         SoundManager.play("capture");
     }
 
@@ -96,7 +120,7 @@ public class MoveHandler {
 
             // Move the Rook
             Move rookMove = new Move(rookStartCol, row, rookTargetCol, row, rook, board[row][rookTargetCol]);
-            // Set the x y pos of the rook since it did not go through ChessMouseAdapter
+            // Set the x y pos of the rook since it did not go through ChessMouseAdapter which usually handles this
             rook.setPosition(chessManager.getSnappedXPos(rookTargetCol), chessManager.getSnappedYPos(row));
             swap(rookMove);
 
@@ -109,7 +133,8 @@ public class MoveHandler {
                 this.getClass().getSimpleName()
         ));
 
-        // add a pop-up menu here
+        move.piece.setSprite(PiecesColors.WHITE == move.piece.getColor() ? whiteQueen : blackQueen);
+        move.piece.setType(PiecesType.QUEEN);
 
         SoundManager.play("promote");
     }
@@ -164,9 +189,16 @@ public class MoveHandler {
             move(move);
         }
 
+        if(move.isPromote) promote(move);
+
         moveHistory.add(move);
         gameState.setColorTurn(gameState.getColorTurn() == PiecesColors.WHITE ? PiecesColors.BLACK : PiecesColors.WHITE);
         gameState.checkState(moveHistory, chessManager);
+
+        if(gameState.getState() != GameState.State.ONGOING) {
+            gameState.popUpState();
+        }
+
         return true;
     }
 }

@@ -11,32 +11,49 @@ import java.util.ArrayList;
 public class MoveRules {
 
     public static boolean validatePawnMove(Move move, Piece[][] board, ArrayList<Move> history) {
-        int dir = move.piece.getColor() == 0 ? -1 : 1;
+        int dir = move.piece.getColor() == PiecesColors.WHITE ? -1 : 1;
         int startRow = move.piece.getColor() == 0 ? 6 : 1;
         int rowDiff = move.new_row - move.prev_row;
         int colDiff = Math.abs(move.new_col - move.prev_col);
+        int promoteRow = move.piece.getColor() == PiecesColors.WHITE ? 0 : 7;
 
         // Normal move
         if (colDiff == 0) {
-            if (rowDiff == dir && board[move.new_row][move.new_col].getColor() == PiecesColors.EMPTY) return true;
+            if (rowDiff == dir && board[move.new_row][move.new_col].getColor() == PiecesColors.EMPTY) {
+                if (move.new_row == promoteRow) move.isPromote = true;
+                return true;
+            }
             if (move.prev_row == startRow && rowDiff == 2 * dir &&
                     board[move.new_row][move.new_col].getColor() == PiecesColors.EMPTY &&
-                    board[move.prev_row + dir][move.prev_col].getColor() == PiecesColors.EMPTY) return true;
+                    board[move.prev_row + dir][move.prev_col].getColor() == PiecesColors.EMPTY) {
+                if (move.new_row == promoteRow) move.isPromote = true;
+                return true;
+            };
+
         }
 
         // Capture
         if (colDiff == 1 && rowDiff == dir) {
             Piece target = board[move.new_row][move.new_col];
-            if (target.getColor() != PiecesColors.EMPTY && target.getColor() != move.piece.getColor()) return true;
+            if (target.getColor() != PiecesColors.EMPTY && target.getColor() != move.piece.getColor()) {
+                if (move.new_row == promoteRow) move.isPromote = true;
+                return true;
+            }
 
-            // En passant
+            // Google en passant
             if (target.getColor() == PiecesColors.EMPTY && history != null && !history.isEmpty()) {
                 Move lastMove = history.getLast();
-                return lastMove.piece.getType() == PiecesType.PAWN &&
-                        lastMove.piece.getColor() != move.piece.getColor() &&
-                        Math.abs(lastMove.new_row - lastMove.prev_row) == 2 &&
-                        lastMove.new_row == move.prev_row &&
-                        lastMove.new_col == move.new_col;
+
+                // readable enough for me so....
+                boolean lastWasPawn = lastMove.piece.getType() == PiecesType.PAWN;
+                boolean lastWasOpponent = lastMove.piece.getColor() != move.piece.getColor();
+                boolean lastMovedTwoSquares = Math.abs(lastMove.new_row - lastMove.prev_row) == 2;
+                boolean sameRowAsLast = lastMove.new_row == move.prev_row;
+                boolean sameColumnAsLast = lastMove.new_col == move.new_col;
+
+                if (move.new_row == promoteRow) move.isPromote = true;
+                move.isEnPassant = true;
+                return lastWasPawn && lastWasOpponent && lastMovedTwoSquares && sameRowAsLast && sameColumnAsLast;
             }
         }
 
