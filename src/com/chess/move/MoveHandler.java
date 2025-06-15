@@ -132,11 +132,8 @@ public class MoveHandler {
                 "%s  Move Type: Promote",
                 this.getClass().getSimpleName()
         ));
-
         move.piece.setSprite(PiecesColors.WHITE == move.piece.getColor() ? whiteQueen : blackQueen);
         move.piece.setType(PiecesType.QUEEN);
-
-        swap(move);
 
         SoundManager.play("promote");
     }
@@ -187,10 +184,12 @@ public class MoveHandler {
             enPassant(move, chessManager.getChessBoard());
         } else if (move.captured.getColor() != PiecesColors.EMPTY) {
             capture(move);
-        } else if (move.isPromote) {
-            promote(move);
         } else {
             move(move);
+        }
+
+        if (move.isPromote) {
+            promote(move);
         }
 
         moveHistory.add(move);

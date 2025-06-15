@@ -79,13 +79,14 @@ public class GameState {
     public boolean getStartGame() { return this.gameStart; }
 
     public void resetGame() {
+        this.whiteCaptured.clear();
+        this.blackCaptured.clear();
+        mainPanel.repaint();
+
         this.gameStart = false;
         this.reset = true;
         this.colorTurn = PiecesColors.WHITE;
         this.state = State.ONGOING;
-
-        this.whiteCaptured.clear();
-        this.blackCaptured.clear();
     }
 
     public void checkState(ArrayList<Move> moveHistory, ChessManager chessManager) {
