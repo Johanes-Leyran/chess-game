@@ -25,13 +25,13 @@ public class CursorHandler {
             );
 
             cursorHashMap.put("normal", toolkit.createCustomCursor(
-                    cursorSheet.getSprite(0, 0), new Point(15, 0), "custom cursor")
+                    cursorSheet.getSprite(0, 0), new Point(0, 0), "custom cursor")
             );
             cursorHashMap.put("toGrab", toolkit.createCustomCursor(
-                    cursorSheet.getSprite(0, 1), new Point(15, 0), "custom cursor")
+                    cursorSheet.getSprite(0, 1), new Point(0, 0), "custom cursor")
             );
             cursorHashMap.put("grab", toolkit.createCustomCursor(
-                    cursorSheet.getSprite(0, 2), new Point(15, 0), "custom cursor")
+                    cursorSheet.getSprite(0, 2), new Point(0, 0), "custom cursor")
             );
         }
     }
