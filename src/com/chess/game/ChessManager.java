@@ -24,7 +24,7 @@ public class ChessManager {
     double chessBoardScale;
     int chessBoardSize;
     int rectOffset = 20;
-    double distanceThreshold = 100;
+    double distanceThreshold = 200;
 
 
     public ChessManager(
