@@ -29,7 +29,7 @@ public class ResourceHandler {
     }
 
     // Does not always work for some reason but directly loading and adding the clip
-    // in sound manager does, probably because of the clip life-cycle
+    // in sound manager does, probably because of the clip life-cycle IDK
     @Deprecated
     public static Clip loadSound(String path) throws
             IOException, UnsupportedAudioFileException, LineUnavailableException

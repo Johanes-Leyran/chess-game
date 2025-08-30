@@ -11,9 +11,7 @@ public class PseudoMoveValidator {
         boolean isValid  = switch (move.piece.getType()) {
             case PiecesType.PAWN -> validatePawn(move, board, history);
             case PiecesType.KNIGHT -> validateKnight(move, board);
-            case PiecesType.ROOK -> validateRook(move, board);
-            case PiecesType.BISHOP -> validateBishop(move, board);
-            case PiecesType.QUEEN -> validateQueen(move, board);
+            case PiecesType.ROOK, PiecesType.QUEEN, PiecesType.BISHOP -> validateSlidingPiece(move, board);
             case PiecesType.KING -> validateKing(move, board);
             default -> false;
         };
@@ -29,15 +27,7 @@ public class PseudoMoveValidator {
         return MoveRules.validateKnightMove(move, board);
     }
 
-    public static boolean validateRook(Move move, Piece[][] board) {
-        return MoveRules.validateSlidingPiece(move, board);
-    }
-
-    public static boolean validateBishop(Move move, Piece[][] board) {
-        return MoveRules.validateSlidingPiece(move, board);
-    }
-
-    public static boolean validateQueen(Move move, Piece[][] board) {
+    public static boolean validateSlidingPiece(Move move, Piece[][] board) {
         return MoveRules.validateSlidingPiece(move, board);
     }
 

@@ -21,15 +21,13 @@ public class CreditsPanel extends JPanel {
     public CreditsPanel(
             JPanel mainPanel,
             CardLayout cardLayout,
-            JFrame frame,
-            CursorHandler cursorHandler,
-            FontHandler fontHandler
+            JFrame frame
     ) {
         this.mainPanel = mainPanel;
         this.cardLayout = cardLayout;
         this.frame = frame;
-        this.cursorHandler = cursorHandler;
-        this.fontHandler = fontHandler;
+        this.cursorHandler = new CursorHandler();
+        this.fontHandler = new FontHandler();
         this.setBorder(new EmptyBorder(25, 25, 25, 25));
 
         this.names[0] = "Leyran, Johanes Lawrence Scott II S.";

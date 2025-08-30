@@ -24,8 +24,6 @@ public class InfoPanel extends JPanel {
             JPanel mainPanel,
             CardLayout cardLayout,
             JFrame frame,
-            CursorHandler cursorHandler,
-            FontHandler fontHandler,
             GameState gameState,
             ChessManager chessManager
     ){
@@ -40,7 +38,7 @@ public class InfoPanel extends JPanel {
         blackPanel.setBackground(new Color(80, 80, 80));
         blackPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        this.blackTimer = new TimerPanel(fontHandler, gameState, duration, PiecesColors.BLACK);
+        this.blackTimer = new TimerPanel(gameState, duration, PiecesColors.BLACK);
         this.blackTimer.start();
         blackPanel.add(this.blackTimer);
         this.add(blackPanel);
@@ -60,20 +58,13 @@ public class InfoPanel extends JPanel {
         JPanel whiteCapturedPanel = new CapturedPanel(gameState.getWhiteCaptured());
         whitePanel.add(whiteCapturedPanel);
 
-        this.whiteTimer = new TimerPanel(fontHandler, gameState, duration, PiecesColors.WHITE);
+        this.whiteTimer = new TimerPanel(gameState, duration, PiecesColors.WHITE);
         this.whiteTimer.start();
         whitePanel.add(this.whiteTimer);
         this.add(whitePanel);
 
         JPanel bottomPanel = new JPanel(new GridLayout(1, 1));
-        bottomPanel.add(new NavPanel(
-                mainPanel,
-                cardLayout,
-                cursorHandler,
-                fontHandler,
-                gameState,
-                chessManager
-        ));
+        bottomPanel.add(new NavPanel(mainPanel, cardLayout, gameState, chessManager));
 
         this.add(bottomPanel);
     }

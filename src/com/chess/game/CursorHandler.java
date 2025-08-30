@@ -9,14 +9,11 @@ import java.util.NoSuchElementException;
 
 public class CursorHandler {
     static HashMap<String, Cursor> cursorHashMap = new HashMap<>();
-    JFrame frame;
+    static JFrame jframe;
 
-    public CursorHandler(JFrame frame, Toolkit toolkit) {
-        this.frame = frame;
-        this.loadCursor(toolkit);
-    }
+    public void loadCursor(JFrame frame, Toolkit toolkit) {
+        jframe = frame;
 
-    public void loadCursor(Toolkit toolkit) {
         if(cursorHashMap.isEmpty()) {
             SpriteSheetHandler cursorSheet;
 
@@ -36,7 +33,13 @@ public class CursorHandler {
         }
     }
 
-    public void setCursor(String name) {
+    public void setCursor(String name, JFrame frame) {
+        if(cursorHashMap.isEmpty()) {
+            throw new NullPointerException(
+                    "cursorHashMap is not loaded"
+            );
+        }
+
         Cursor cursor = cursorHashMap.get(name);
 
         if(cursor == null) {
@@ -45,6 +48,10 @@ public class CursorHandler {
             );
         }
 
-        this.frame.setCursor(cursor);
+        frame.setCursor(cursor);
+    }
+
+    public void setCursor(String name) {
+        this.setCursor(name, jframe);
     }
 }

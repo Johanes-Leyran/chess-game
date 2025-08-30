@@ -3,6 +3,7 @@ package src.com.chess.components;
 import src.com.chess.game.CursorHandler;
 import src.com.chess.utils.FontHandler;
 import src.com.chess.utils.SoundManager;
+import src.com.chess.utils.UIBuilder;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,12 +24,12 @@ public class MenuPanel extends JPanel {
     CardLayout cardLayout;
 
 
-    public MenuPanel(JPanel mainPanel, CardLayout cardLayout, JFrame frame, CursorHandler cursorHandler, FontHandler fontHandler){
+    public MenuPanel(JPanel mainPanel, CardLayout cardLayout, JFrame frame){
         this.frame = frame;
-        this.cursorHandler = cursorHandler;
+        this.cursorHandler = new CursorHandler();
         this.mainPanel = mainPanel;
         this.cardLayout = cardLayout;
-        this.fontHandler = fontHandler;
+        this.fontHandler = new FontHandler();
         this.setLayout(new BorderLayout());
         this.setBackground(new Color(45, 45, 45));
 
@@ -47,11 +48,11 @@ public class MenuPanel extends JPanel {
         buttonPanel.setBorder(new EmptyBorder(70, 300, 200, 300));
 
         playVSHumanBtn = this.createButton("Player vs Player", "GAME");
-        // playVSAIBtn = this.createButton("Player vs AI", "GAME");
+        playVSAIBtn = this.createButton("Player vs AI", "GAME");
         creditsBtn = this.createButton("Credits", "CREDITS");
 
         buttonPanel.add(playVSHumanBtn);
-        // buttonPanel.add(playVSAIBtn);
+        buttonPanel.add(playVSAIBtn);
         buttonPanel.add(creditsBtn);
 
         this.add(buttonPanel, BorderLayout.CENTER);
@@ -59,49 +60,14 @@ public class MenuPanel extends JPanel {
         this.add(groupLabel, BorderLayout.SOUTH);
     }
     private JLabel createLabel(String text, EmptyBorder emptyBorder, int fontSize) {
-        JLabel label = new JLabel(text);
-        label.setForeground(new Color(220, 220, 220));
-        label.setFont(fontHandler.getFont(fontSize));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setBorder(emptyBorder);
-
-        return label;
+        return UIBuilder.buildLabel(
+                text, emptyBorder, fontHandler.getFont(fontSize)
+        );
     }
 
     private JButton createButton(String text, String goTo) {
-        JButton button = new JButton(text);
-
-        button.setBackground(new Color(60, 60, 60));
-        button.setForeground(Color.WHITE);
-        button.setFont(fontHandler.getFont(20));
-        button.setFocusPainted(false);
-        button.setBorder(new EmptyBorder(30, 30, 30, 30));
-
-        button.getModel().addChangeListener(changeEvent -> {
-            ButtonModel model = (ButtonModel) changeEvent.getSource();
-
-            if (model.isRollover()) {
-                button.setBackground(new Color(80, 80, 80));
-            } else {
-                button.setBackground(new Color(60, 60, 60));
-            }
-        });
-
-        button.addActionListener(actionEvent -> {
-            this.cursorHandler.setCursor("grab");
-
-            cardLayout.show(mainPanel, goTo);
-            SoundManager.play("move-self");
-
-            final int CURSOR_RESET_DELAY_MS = 150;
-
-            Timer cursorResetTimer = new Timer(
-                    CURSOR_RESET_DELAY_MS, e -> this.cursorHandler.setCursor("normal")
-            );
-            cursorResetTimer.setRepeats(false); // to ensure it only runs once
-            cursorResetTimer.start();
-        });
-
-        return button;
+        return UIBuilder.buildNavButton(
+                text, goTo, fontHandler.getFont(20), cursorHandler, cardLayout, mainPanel
+        );
     }
 }

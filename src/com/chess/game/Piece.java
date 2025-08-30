@@ -38,7 +38,7 @@ public class Piece {
      }
 
      public Piece(Piece other) {
-          // only necessary for simulating the chess board
+          // copy constructor for simulating the chess board
           this.color = other.color;
           this.type = other.type;
           this.isMoved = other.isMoved;
@@ -107,8 +107,6 @@ public class Piece {
      }
 
      public boolean isMoved() { return this.isMoved; }
-
-     public void setIsMove(boolean b) { this.isMoved = b; }
 
      public int getXPosition() { return this.x; }
 

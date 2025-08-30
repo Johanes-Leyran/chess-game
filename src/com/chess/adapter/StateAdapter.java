@@ -7,6 +7,7 @@ import java.awt.*;
 
 // not really an adapter but I don't know where to put it
 // a class that holds data to be shared across adapters class
+// todo: make the attributes static to avoid tedious importing shits
 public class StateAdapter {
     Point initialPoint;
     Piece selected;

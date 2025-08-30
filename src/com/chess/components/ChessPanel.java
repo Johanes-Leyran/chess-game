@@ -27,7 +27,6 @@ public class ChessPanel extends JPanel {
 
     public ChessPanel(
             ComponentData componentData,
-            CursorHandler cursorHandler,
             GameState gameState,
             StateAdapter stateAdapter,
             ChessManager chessManager,
@@ -44,7 +43,7 @@ public class ChessPanel extends JPanel {
                 this.componentData.chessBoardSize,
                 this.componentData.chessBoardScale
         ).getSprite(0, 0);
-        this.cursorHandler = cursorHandler;
+        this.cursorHandler = new CursorHandler();
         this.setPreferredSize(new Dimension(
                 chessBoardImg.getWidth(),
                 chessBoardImg.getHeight()
@@ -71,6 +70,7 @@ public class ChessPanel extends JPanel {
         if(Globals.getShowRect())
             ChessPainter.drawAllRect(g, chessManager);
 
+        // these functions also handles logic own their own such as when or when not to draw
         ChessPainter.drawValidMoves(g, stateAdapter.getSelected(), chessManager, moveHandler.getMoveHistory());
         ChessPainter.drawRedSquare(g, chessManager, PiecesColors.WHITE);
         ChessPainter.drawRedSquare(g, chessManager, PiecesColors.BLACK);

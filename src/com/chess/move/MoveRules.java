@@ -53,6 +53,7 @@ public class MoveRules {
 
                 if (move.new_row == promoteRow) move.isPromote = true;
                 move.isEnPassant = true;
+
                 return lastWasPawn && lastWasOpponent && lastMovedTwoSquares && sameRowAsLast && sameColumnAsLast;
             }
         }

@@ -39,9 +39,7 @@ public class GameState {
     MoveHandler moveHandler;
 
     public GameState(
-            CursorHandler cursorHandler,
             JPanel mainPanel,
-            FontHandler fontHandler,
             ChessManager chessManager,
             CardLayout cardLayout,
             MoveHandler moveHandler
@@ -52,9 +50,9 @@ public class GameState {
         this.whiteCaptured = new ArrayList<>();
         this.blackCaptured = new ArrayList<>();
 
-        this.cursorHandler = cursorHandler;
+        this.cursorHandler = new CursorHandler();
         this.mainPanel = mainPanel;
-        this.fontHandler = fontHandler;
+        this.fontHandler = new FontHandler();
         this.chessManager = chessManager;
         this.cardLayout = cardLayout;
         this.moveHandler = moveHandler;
@@ -124,14 +122,7 @@ public class GameState {
 
     public void popUpState() {
         PopUpBuilder.popMessage(
-                getStringState(),
-                cardLayout,
-                mainPanel,
-                this,
-                chessManager,
-                fontHandler,
-                cursorHandler,
-                moveHandler
+                getStringState(), cardLayout, mainPanel, this, chessManager, moveHandler
         );
     }
 

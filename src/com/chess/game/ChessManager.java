@@ -24,7 +24,7 @@ public class ChessManager {
     double chessBoardScale;
     int chessBoardSize;
     int rectOffset = 20;
-    double distanceThreshold = 200;
+    double distanceThreshold = 250;
 
 
     public ChessManager(
@@ -77,11 +77,7 @@ public class ChessManager {
             int positionX = getSnappedXPos(col);
             int positionY = getSnappedYPos(row);
 
-            Rectangle rect = setUpRect(
-                    positionX,
-                    positionY,
-                    sprite
-            );
+            Rectangle rect = setUpRect(positionX, positionY, sprite);
             chessBoard[row][col] = new Piece(
                     color,
                     line[indexStartingLine],

@@ -22,9 +22,7 @@ public class GamePanel extends JPanel {
     public GamePanel(
             JPanel mainPanel,
             CardLayout cardLayout,
-            JFrame frame,
-            CursorHandler cursorHandler,
-            FontHandler fontHandler
+            JFrame frame
     ){
         this.mainPanel = mainPanel;
         this.frame = frame;
@@ -48,12 +46,11 @@ public class GamePanel extends JPanel {
         );
 
         MoveHandler moveHandler = new MoveHandler(chessManager);
-        GameState gameState = new GameState(cursorHandler, mainPanel, fontHandler, chessManager, cardLayout, moveHandler);
+        GameState gameState = new GameState(mainPanel, chessManager, cardLayout, moveHandler);
         moveHandler.setGameState(gameState); // Circular import yay
 
         this.add(new ChessPanel(
                 this.componentData,
-                cursorHandler,
                 gameState,
                 this.stateAdapter,
                 chessManager,
@@ -64,8 +61,6 @@ public class GamePanel extends JPanel {
                 mainPanel,
                 cardLayout,
                 frame,
-                cursorHandler,
-                fontHandler,
                 gameState,
                 chessManager
                 ), BorderLayout.CENTER

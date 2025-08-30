@@ -21,8 +21,8 @@ public class TimerPanel extends JPanel {
     final DecimalFormat secondsFormat = new DecimalFormat("0.00");
     final FontHandler fontHandler;
 
-    public TimerPanel(FontHandler fontHandler, GameState gameState, long durationLimit, int color) {
-        this.fontHandler = fontHandler;
+    public TimerPanel(GameState gameState, long durationLimit, int color) {
+        this.fontHandler = new FontHandler();
         this.gameState = gameState;
         this.durationLimit = durationLimit;
         this.color = color;

@@ -38,7 +38,7 @@ public class ChessPainter {
         g.drawImage(piece.getSprite(), piece.getXPosition(), piece.getYPosition(), null);
     }
 
-    // note to self: this does not change the actual position in chess board only animation and its x y pos
+    // note to self: this does not change the actual position in chess board only the sprites positions
     public static void slidePiece(Graphics g, Piece piece, int target_col, int target_row, ChessManager chessManager) {
         Point startingPos = piece.getLocation();
         Point targetPos = new Point(chessManager.getSnappedPos(target_col), chessManager.getSnappedPos(target_row));
@@ -135,9 +135,8 @@ public class ChessPainter {
         g2d.dispose();
     }
 
-    // draw all valid moves
+    // draw all valid moves if there's any
     public static void drawValidMoves(Graphics g, Piece piece, ChessManager chessManager, ArrayList<Move> history) {
-        // the piece came from state adapter, and it can be null and thus
         if(piece == null) return;
 
         for(int row = 0;row < 8;row++) {
