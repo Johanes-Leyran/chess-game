@@ -22,13 +22,12 @@ public class ChessMouseAdapter extends MouseAdapter {
 
     public ChessMouseAdapter(
             ChessManager chessManager,
-            CursorHandler cursorHandler,
             StateAdapter stateAdapter,
             MoveHandler moveHandler,
             GameState gameState
     ) {
         this.chessManager = chessManager;
-        this.cursorHandler = cursorHandler;
+        this.cursorHandler = new CursorHandler();
         this.stateAdapter = stateAdapter;
         this.moveHandler = moveHandler;
         this.gameState = gameState;

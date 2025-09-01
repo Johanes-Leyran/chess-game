@@ -19,10 +19,10 @@ public class ChessMotionAdapter extends MouseMotionAdapter {
 
 
     public ChessMotionAdapter(
-            ChessManager chessManager, CursorHandler cursorHandler, StateAdapter stateAdapter, GameState gameState
+            ChessManager chessManager, StateAdapter stateAdapter, GameState gameState
     ) {
         this.chessManager = chessManager;
-        this.cursorHandler = cursorHandler;
+        this.cursorHandler = new CursorHandler();
         this.stateAdapter = stateAdapter;
         this.gameState = gameState;
     }

@@ -14,21 +14,15 @@ public class MenuPanel extends JPanel {
     JLabel titleLabel;
     JLabel groupLabel;
     JFrame frame;
-    JPanel mainPanel;
     JPanel buttonPanel;
     JButton creditsBtn;
     JButton playVSHumanBtn;
     JButton playVSAIBtn;
-    CursorHandler cursorHandler;
     FontHandler fontHandler;
-    CardLayout cardLayout;
 
 
-    public MenuPanel(JPanel mainPanel, CardLayout cardLayout, JFrame frame){
+    public MenuPanel(JFrame frame){
         this.frame = frame;
-        this.cursorHandler = new CursorHandler();
-        this.mainPanel = mainPanel;
-        this.cardLayout = cardLayout;
         this.fontHandler = new FontHandler();
         this.setLayout(new BorderLayout());
         this.setBackground(new Color(45, 45, 45));
@@ -67,7 +61,10 @@ public class MenuPanel extends JPanel {
 
     private JButton createButton(String text, String goTo) {
         return UIBuilder.buildNavButton(
-                text, goTo, fontHandler.getFont(20), cursorHandler, cardLayout, mainPanel
+                text,
+                goTo,
+                fontHandler.getFont(20),
+                new EmptyBorder(30, 30, 30, 30)
         );
     }
 }

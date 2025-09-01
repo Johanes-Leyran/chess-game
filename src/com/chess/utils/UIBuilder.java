@@ -7,6 +7,9 @@ import java.awt.*;
 
 
 public class UIBuilder {
+    static final int CURSOR_RESET_DELAY_MS = 150;
+    static final CardLayoutHandler cardLayoutHandler = new CardLayoutHandler();
+
     public static JLabel buildLabel(String text, EmptyBorder emptyBorder, Font font) {
         JLabel label = new JLabel(text);
         label.setForeground(new Color(220, 220, 220));
@@ -17,14 +20,14 @@ public class UIBuilder {
         return label;
     }
 
-    private static JButton buildBaseButton(String text, Font font) {
+    private static JButton buildBaseButton(String text, Font font, EmptyBorder emptyBorder) {
         JButton button = new JButton(text);
 
         button.setBackground(new Color(60, 60, 60));
         button.setForeground(Color.WHITE);
         button.setFont(font);
         button.setFocusPainted(false);
-        button.setBorder(new EmptyBorder(30, 30, 30, 30));
+        button.setBorder(emptyBorder);
 
         button.getModel().addChangeListener(changeEvent -> {
             ButtonModel model = (ButtonModel) changeEvent.getSource();
@@ -43,18 +46,15 @@ public class UIBuilder {
             String text,
             String goTo,
             Font font,
-            CursorHandler cursorHandler,
-            CardLayout cardLayout,
-            JPanel mainPanel
+            EmptyBorder emptyBorder
     ) {
-        JButton button = buildBaseButton(text, font);
+        JButton button = buildBaseButton(text, font, emptyBorder);
+        CursorHandler cursorHandler = new CursorHandler();
 
         button.addActionListener(_ -> {
             cursorHandler.setCursor("grab");
-            cardLayout.show(mainPanel, goTo);
+            cardLayoutHandler.show(goTo);
             SoundManager.play("move-self");
-
-            final int CURSOR_RESET_DELAY_MS = 150;
 
             Timer cursorResetTimer = new Timer(
                     CURSOR_RESET_DELAY_MS, _ -> cursorHandler.setCursor("normal")
@@ -71,15 +71,14 @@ public class UIBuilder {
             String text,
             Font font,
             CursorHandler cursorHandler,
-            ActionCall callback
+            ActionCall callback,
+            EmptyBorder emptyBorder
     ) {
-        JButton button = buildBaseButton(text, font);
+        JButton button = buildBaseButton(text, font, emptyBorder);
 
         button.addActionListener(_ -> {
             cursorHandler.setCursor("grab");
             callback.call();
-
-            final int CURSOR_RESET_DELAY_MS = 150;
 
             Timer cursorResetTimer = new Timer(
                     CURSOR_RESET_DELAY_MS, _ -> cursorHandler.setCursor("normal")

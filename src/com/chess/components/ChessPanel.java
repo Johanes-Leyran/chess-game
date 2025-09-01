@@ -52,12 +52,8 @@ public class ChessPanel extends JPanel {
         this.udpateLoopTimer.start();
 
         this.moveHandler = moveHandler;
-        this.addMouseListener(new ChessMouseAdapter(
-                this.chessManager, this.cursorHandler, stateAdapter, moveHandler, gameState
-        ));
-        this.addMouseMotionListener(new ChessMotionAdapter(
-                this.chessManager, this.cursorHandler, stateAdapter, gameState
-        ));
+        this.addMouseListener(new ChessMouseAdapter(this.chessManager, stateAdapter, moveHandler, gameState));
+        this.addMouseMotionListener(new ChessMotionAdapter(this.chessManager, stateAdapter, gameState));
     }
 
     @Override

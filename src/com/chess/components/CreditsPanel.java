@@ -1,8 +1,10 @@
 package src.com.chess.components;
 
+import src.com.chess.constants.UIColors;
 import src.com.chess.game.CursorHandler;
 import src.com.chess.utils.FontHandler;
 import src.com.chess.utils.SoundManager;
+import src.com.chess.utils.UIBuilder;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,13 +20,7 @@ public class CreditsPanel extends JPanel {
     FontHandler fontHandler;
 
 
-    public CreditsPanel(
-            JPanel mainPanel,
-            CardLayout cardLayout,
-            JFrame frame
-    ) {
-        this.mainPanel = mainPanel;
-        this.cardLayout = cardLayout;
+    public CreditsPanel(JFrame frame) {
         this.frame = frame;
         this.cursorHandler = new CursorHandler();
         this.fontHandler = new FontHandler();
@@ -80,57 +76,28 @@ public class CreditsPanel extends JPanel {
                 24
         ));
 
-        backBtn = new JButton("Back");
-        backBtn.setBackground(new Color(60, 60, 60));
-        backBtn.setForeground(Color.WHITE);
-        backBtn.setFont(fontHandler.getFont(20));
-        backBtn.setFocusPainted(false);
-        backBtn.setBorder(new EmptyBorder(20, 20, 15, 20));
+        backBtn = UIBuilder.buildNavButton(
+                "BACK",
+                "MENU",
+                fontHandler.getFont(20),
+                new EmptyBorder(20, 20, 15, 20)
+        );
 
-        backBtn.getModel().addChangeListener(e -> {
-            ButtonModel model = (ButtonModel) e.getSource();
-
-            if (model.isRollover()) {
-                backBtn.setBackground(new Color(80, 80, 80));
-            } else {
-                backBtn.setBackground(new Color(60, 60, 60));
-            }
-        });
-
-        backBtn.addActionListener(_ -> {
-            this.cursorHandler.setCursor("grab");
-            cardLayout.show(mainPanel, "MENU");
-            SoundManager.play("capture");
-
-            final int CURSOR_RESET_DELAY_MS = 150;
-
-            Timer cursorResetTimer = new Timer(CURSOR_RESET_DELAY_MS, _ -> {
-                this.cursorHandler.setCursor("normal");
-            });
-            cursorResetTimer.setRepeats(false); // Ensure it only runs once
-            cursorResetTimer.start();
-        });
 
         this.add(contentPanel, BorderLayout.CENTER);
         this.add(backBtn, BorderLayout.SOUTH);
     }
 
     private JLabel createLabel(String text, EmptyBorder emptyBorder, int fontSize) {
-        JLabel label = new JLabel(text);
-        label.setForeground(new Color(220, 220, 220));
-        label.setFont(fontHandler.getFont(fontSize));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setBorder(emptyBorder);
-
-        return label;
+        return UIBuilder.buildLabel(text, emptyBorder, fontHandler.getFont(fontSize));
     }
 
     public JLabel[] generateLabelNames(String[] list, int size) {
         JLabel[] labels = new JLabel[size];
 
         for(int i = 0; i < list.length;i++) {
-            JLabel labelName = this.createLabel(
-                    list[i], new EmptyBorder(0, 0, 15, 0), 20
+            JLabel labelName =  UIBuilder.buildLabel(
+                    list[i], new EmptyBorder(0, 0, 15, 0), fontHandler.getFont(20)
             );
             labels[i] = labelName;
         }

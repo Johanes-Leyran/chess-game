@@ -3,18 +3,15 @@ package src.com.chess.components;
 import src.com.chess.game.ChessManager;
 import src.com.chess.game.CursorHandler;
 import src.com.chess.game.GameState;
-import src.com.chess.utils.ActionCall;
-import src.com.chess.utils.FontHandler;
-import src.com.chess.utils.SoundManager;
-import src.com.chess.utils.UIBuilder;
+import src.com.chess.utils.*;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 
 public class NavPanel extends JPanel {
-    JPanel mainPanel;
-    CardLayout cardLayout;
+    CardLayoutHandler cardLayoutHandler;
     CursorHandler cursorHandler;
     FontHandler fontHandler;
     JButton backBtn;
@@ -22,24 +19,21 @@ public class NavPanel extends JPanel {
     JButton redoBtn;
 
     public NavPanel(
-            JPanel mainPanel,
-            CardLayout cardLayout,
             GameState gameState,
             ChessManager chessManager
     ){
-        this.mainPanel = mainPanel;
-        this.cardLayout = cardLayout;
         this.cursorHandler = new CursorHandler();
         this.fontHandler = new FontHandler();
         this.setLayout(new GridBagLayout());
         this.setBackground(new Color(80, 80, 80));
+        this.cardLayoutHandler = new CardLayoutHandler();
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
         backBtn = createButton("Quit", () -> {
             SoundManager.play("capture");
-            cardLayout.show(mainPanel, "MENU");
+            cardLayoutHandler.show("MENU");
 
             // reset
             gameState.resetGame();
@@ -58,7 +52,7 @@ public class NavPanel extends JPanel {
 
     private JButton createButton(String text, ActionCall callback) {
         return UIBuilder.buildButton(
-                text, fontHandler.getFont(16), cursorHandler, callback
+                text, fontHandler.getFont(16), cursorHandler, callback, new EmptyBorder(30, 30, 30, 30)
         );
     }
 }

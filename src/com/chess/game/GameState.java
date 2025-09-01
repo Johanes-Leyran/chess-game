@@ -5,6 +5,7 @@ import src.com.chess.move.MoveValidator;
 import src.com.chess.move.MoveSafety;
 import src.com.chess.move.Move;
 import src.com.chess.constants.PiecesColors;
+import src.com.chess.utils.CardLayoutHandler;
 import src.com.chess.utils.FontHandler;
 import src.com.chess.utils.Log;
 import src.com.chess.utils.PopUpBuilder;
@@ -26,42 +27,37 @@ public class GameState {
     ArrayList<Piece> whiteCaptured;
     ArrayList<Piece> blackCaptured;
 
+    int whiteScore;
+    int blackScore;
+
     int state;
     int colorTurn;
     boolean gameStart;
     boolean reset;
 
-    CursorHandler cursorHandler;
-    JPanel mainPanel;
-    FontHandler fontHandler;
     ChessManager chessManager;
-    CardLayout cardLayout;
     MoveHandler moveHandler;
 
     public GameState(
-            JPanel mainPanel,
             ChessManager chessManager,
-            CardLayout cardLayout,
             MoveHandler moveHandler
     ) {
         this.state = State.ONGOING;
         this.colorTurn = PiecesColors.WHITE;
         this.gameStart = false;
+
         this.whiteCaptured = new ArrayList<>();
         this.blackCaptured = new ArrayList<>();
 
-        this.cursorHandler = new CursorHandler();
-        this.mainPanel = mainPanel;
-        this.fontHandler = new FontHandler();
         this.chessManager = chessManager;
-        this.cardLayout = cardLayout;
         this.moveHandler = moveHandler;
     }
 
     public void updateCaptured(Piece captured) {
-        // Being explicit about which colors avoids accidentally adding a piece that has an empty color
-        if(this.colorTurn == PiecesColors.WHITE) this.whiteCaptured.add(captured);
-        else if(this.colorTurn == PiecesColors.BLACK) this.blackCaptured.add(captured);
+        if(this.colorTurn == PiecesColors.WHITE)
+            this.whiteCaptured.add(captured);
+        else if(this.colorTurn == PiecesColors.BLACK)
+            this.blackCaptured.add(captured);
     }
 
     public void startGame() {
@@ -79,7 +75,7 @@ public class GameState {
     public void resetGame() {
         this.whiteCaptured.clear();
         this.blackCaptured.clear();
-        mainPanel.repaint();
+        CardLayoutHandler.mainPanel.repaint();
 
         this.gameStart = false;
         this.reset = true;
@@ -121,9 +117,7 @@ public class GameState {
     public int getState() { return this.state; }
 
     public void popUpState() {
-        PopUpBuilder.popMessage(
-                getStringState(), cardLayout, mainPanel, this, chessManager, moveHandler
-        );
+        PopUpBuilder.popMessage(getStringState(), this, chessManager, moveHandler);
     }
 
     public void stateTimeOver(int color) {

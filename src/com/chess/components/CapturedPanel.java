@@ -24,6 +24,7 @@ public class CapturedPanel extends JPanel {
     }
 
     private int getPieceValue(Piece p) {
+        // todo: add score which one is on the advantage
         if (p == null) return -1; // null safety
         return switch (p.getType()) {
             case PiecesType.PAWN -> 1;

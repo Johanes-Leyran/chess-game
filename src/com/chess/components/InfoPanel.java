@@ -21,15 +21,11 @@ public class InfoPanel extends JPanel {
     long duration = 600000;
 
     public InfoPanel(
-            JPanel mainPanel,
-            CardLayout cardLayout,
             JFrame frame,
             GameState gameState,
             ChessManager chessManager
     ){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.mainPanel = mainPanel;
-        this.cardLayout = cardLayout;
         this.frame = frame;
         this.setBackground(new Color(80, 80, 80));
 
@@ -64,7 +60,7 @@ public class InfoPanel extends JPanel {
         this.add(whitePanel);
 
         JPanel bottomPanel = new JPanel(new GridLayout(1, 1));
-        bottomPanel.add(new NavPanel(mainPanel, cardLayout, gameState, chessManager));
+        bottomPanel.add(new NavPanel(gameState, chessManager));
 
         this.add(bottomPanel);
     }

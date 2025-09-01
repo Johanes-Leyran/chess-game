@@ -1,6 +1,7 @@
 package src.com.chess.components;
 
 import src.com.chess.game.CursorHandler;
+import src.com.chess.utils.CardLayoutHandler;
 import src.com.chess.utils.FontHandler;
 import src.com.chess.utils.ResourceHandler;
 import src.com.chess.utils.UIBuilder;
@@ -41,12 +42,15 @@ public class ChessFrame extends JFrame {
 
         JPanel mainPanel = new JPanel(new CardLayout());
         CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+        CardLayoutHandler cardLayoutHandler = new CardLayoutHandler();
+        cardLayoutHandler.load(mainPanel, cardLayout);
+
         FontHandler fontHandler = new FontHandler();
         fontHandler.loadFont("Broken Console Bold.ttf");
 
-        mainPanel.add(new MenuPanel(mainPanel, cardLayout, this), "MENU");
-        mainPanel.add(new CreditsPanel(mainPanel, cardLayout, this), "CREDITS");
-        mainPanel.add(new GamePanel(mainPanel, cardLayout,this), "GAME");
+        mainPanel.add(new MenuPanel(this), "MENU");
+        mainPanel.add(new CreditsPanel(this), "CREDITS");
+        mainPanel.add(new GamePanel(this), "GAME");
 
         this.add(mainPanel);
         this.setLocationRelativeTo(null);

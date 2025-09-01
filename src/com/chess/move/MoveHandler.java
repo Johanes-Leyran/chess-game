@@ -193,7 +193,9 @@ public class MoveHandler {
         }
 
         moveHistory.add(move);
-        gameState.setColorTurn(gameState.getColorTurn() == PiecesColors.WHITE ? PiecesColors.BLACK : PiecesColors.WHITE);
+        gameState.setColorTurn(
+                gameState.getColorTurn() == PiecesColors.WHITE ? PiecesColors.BLACK : PiecesColors.WHITE
+        );
         gameState.checkState(moveHistory, chessManager);
 
         if(gameState.getState() != GameState.State.ONGOING) {

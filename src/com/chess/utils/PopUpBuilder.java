@@ -1,5 +1,6 @@
 package src.com.chess.utils;
 
+import src.com.chess.constants.UIColors;
 import src.com.chess.game.ChessManager;
 import src.com.chess.game.CursorHandler;
 import src.com.chess.game.GameState;
@@ -15,24 +16,24 @@ public class PopUpBuilder {
 
     public static void popMessage(
             String msg,
-            CardLayout cardLayout,
-            JPanel mainPanel,
             GameState gameState,
             ChessManager chessManager,
             MoveHandler moveHandler
     ) {
         FontHandler fontHandler = new FontHandler();
         CursorHandler cursorHandler = new CursorHandler();
+        CardLayoutHandler cardLayoutHandler = new CardLayoutHandler();
         JFrame popUp = new JFrame("Game Over");
         cursorHandler.setCursor("normal", popUp);
         popUp.setResizable(false);
         popUp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         popUp.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        popUp.getContentPane().setBackground(new Color(60, 60, 60));
+        popUp.getContentPane().setBackground(UIColors.GRAY);
 
         // Create inner panel with layout and border
         JPanel contentPanel = new JPanel(new GridBagLayout());
-        contentPanel.setBackground(new Color(80, 80, 80));
+        // todo: make color not hardcoded
+        contentPanel.setBackground(UIColors.LIGHT_GRAY);
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -45,7 +46,7 @@ public class PopUpBuilder {
         gbc.gridwidth = 2;
 
         JLabel label = new JLabel(msg);
-        label.setForeground(new Color(220, 220, 220));
+        label.setForeground(UIColors.WHITE);
         label.setFont(fontHandler.getFont(24));
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setBorder(new EmptyBorder(10, 10, 20, 10));
@@ -69,7 +70,7 @@ public class PopUpBuilder {
         JButton backBtn = createButton("Back", fontHandler, cursorHandler, () -> {
             reset(gameState, chessManager, moveHandler);
             SoundManager.play("move-self");
-            cardLayout.show(mainPanel, "MENU");
+            cardLayoutHandler.show("MENU");
             popUp.dispose();
         });
 
@@ -91,7 +92,11 @@ public class PopUpBuilder {
             String text, FontHandler fontHandler, CursorHandler cursorHandler, ActionCall callback
     ) {
         return UIBuilder.buildButton(
-                text, fontHandler.getFont(16), cursorHandler, callback
+                text,
+                fontHandler.getFont(16),
+                cursorHandler,
+                callback,
+                new EmptyBorder(15, 30, 15, 30)
         );
     }
 }
